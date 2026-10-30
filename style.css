@@ -81,9 +81,8 @@ html, body {
   width: 100%;
   height: 100%;
   height: 100dvh;
-  max-width: 900px;
   margin: 0 auto;
-  padding: env(safe-area-inset-top, 6px) env(safe-area-inset-right, 8px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 8px);
+  padding: env(safe-area-inset-top, 6px) env(safe-area-inset-right, 10px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 10px);
   position: relative;
   z-index: 10;
 }
@@ -93,7 +92,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
+  padding: 6px 14px;
   background: var(--panel-bg);
   border-radius: 20px;
   border: 3px solid var(--panel-border);
@@ -121,7 +120,7 @@ html, body {
   -webkit-text-fill-color: transparent;
 }
 
-/* Score & Stars in Header (Visible everywhere) */
+/* Score & Stars in Header */
 .header-score-group {
   display: flex;
   align-items: center;
@@ -135,16 +134,16 @@ html, body {
   background: #FFF;
   border: 2px solid var(--panel-border);
   border-radius: 18px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   box-shadow: 0 2px 6px var(--shadow-color);
 }
 
 .badge-icon {
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .badge-val {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 900;
   color: var(--accent-pink);
 }
@@ -180,19 +179,19 @@ html, body {
   box-shadow: 0 1px 0 rgba(0,0,0,0.12);
 }
 
-/* Main Arena: Clean 3-column / flexible layout */
+/* Main Arena: Maximized Center Board! */
 .game-arena {
   display: flex;
   flex: 1;
   min-height: 0;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   position: relative;
   overflow: hidden;
 }
 
-/* Side Cards: Hold & Next */
+/* Compact Side Cards: Hold & Next */
 .side-widget {
   display: flex;
   flex-direction: column;
@@ -218,7 +217,7 @@ html, body {
   font-size: 11px;
   font-weight: 800;
   color: var(--accent-pink);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   letter-spacing: 0.5px;
 }
 
@@ -257,14 +256,7 @@ html, body {
   filter: drop-shadow(0 3px 5px var(--shadow-color));
 }
 
-/* Kid Power Buttons (Oops! & Magic Wand) */
-.power-col {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-}
-
+/* Kid Power: Magic Wand */
 .big-power-btn {
   display: flex;
   flex-direction: column;
@@ -272,8 +264,9 @@ html, body {
   justify-content: center;
   background: #FFFDF0;
   border: 2.5px solid #FFD166;
-  border-radius: 14px;
-  padding: 6px 2px;
+  border-radius: 16px;
+  padding: 8px 4px;
+  width: 100%;
   cursor: pointer;
   box-shadow: 0 4px 0 #E2B742;
   transition: transform 0.08s, box-shadow 0.08s;
@@ -291,16 +284,17 @@ html, body {
 }
 
 .big-power-icon {
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .big-power-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   color: var(--text-color);
+  margin-top: 2px;
 }
 
-/* Center Board Container */
+/* Center Board: Dominant & Big! */
 .board-container {
   display: flex;
   align-items: center;
@@ -315,9 +309,9 @@ html, body {
 .board-frame {
   background: var(--panel-bg);
   border: 4px solid var(--panel-border);
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 4px;
-  box-shadow: 0 8px 24px var(--shadow-color);
+  box-shadow: 0 8px 28px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,11 +321,11 @@ html, body {
 
 #gameCanvas {
   display: block;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #FFF;
 }
 
-/* Celebration Banner (Fixed: Hidden by default!) */
+/* Celebration Banner */
 .celebration-banner {
   position: absolute;
   top: 40%;
@@ -356,6 +350,18 @@ html, body {
 
 .banner-anim {
   animation: bannerBurst 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* PC Controls Hint Bar */
+.pc-hint-bar {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 2px 0;
+  flex-shrink: 0;
 }
 
 /* ======================================================== */
@@ -397,7 +403,7 @@ html, body {
   transform: translateY(5px);
 }
 
-/* ◀ Move Left (Ocean Blue) */
+/* ◀ Move Left */
 .btn-move-left {
   width: 72px;
   background: linear-gradient(180deg, #E8F4FD 0%, #D0EAFF 100%);
@@ -408,7 +414,7 @@ html, body {
   box-shadow: 0 1px 0 #2A75E6;
 }
 
-/* ▶ Move Right (Ocean Blue) */
+/* ▶ Move Right */
 .btn-move-right {
   width: 72px;
   background: linear-gradient(180deg, #E8F4FD 0%, #D0EAFF 100%);
@@ -419,7 +425,7 @@ html, body {
   box-shadow: 0 1px 0 #2A75E6;
 }
 
-/* 🔄 SPIN (Vibrant Candy Pink - The fun turning button!) */
+/* 🔄 SPIN */
 .btn-spin {
   width: 82px;
   background: linear-gradient(180deg, #FFE5EC 0%, #FFB6C1 100%);
@@ -430,7 +436,7 @@ html, body {
   box-shadow: 0 1px 0 #E03E60;
 }
 
-/* ⬇️ DOWN (Sunny Gold/Green - Gentle drop!) */
+/* ⬇️ DOWN */
 .btn-drop-down {
   width: 82px;
   background: linear-gradient(180deg, #E8F8EE 0%, #B7EFC5 100%);
@@ -454,7 +460,7 @@ html, body {
   letter-spacing: 0.5px;
 }
 
-/* Quick Hard Drop button in center */
+/* Quick Slam Drop button in center */
 .ctrl-center-group {
   display: flex;
   align-items: center;
@@ -591,8 +597,10 @@ html, body {
 }
 
 /* ======================================================== */
-/* Responsive Tweaks (iPhone & iPad) */
+/* Responsive Tweaks: Mobile, Tablet, and PC */
 /* ======================================================== */
+
+/* Small Screens (iPhone in Portrait) */
 @media (max-width: 600px) {
   .app-header {
     padding: 4px 8px;
@@ -656,32 +664,75 @@ html, body {
   }
 }
 
+/* Tablets (iPad) */
 @media (min-width: 601px) and (max-width: 1024px) {
+  .app-layout {
+    max-width: 850px;
+  }
   .side-widget {
-    width: 100px;
+    width: 86px;
   }
   .kid-btn {
-    height: 70px;
+    height: 68px;
   }
   .btn-move-left, .btn-move-right {
-    width: 82px;
+    width: 78px;
   }
   .btn-spin, .btn-drop-down {
-    width: 95px;
+    width: 88px;
   }
 }
 
+/* PC / Desktop (Browser on PC: Hero Board!) */
 @media (min-width: 1025px) {
+  .app-layout {
+    max-width: 1080px;
+    padding: 8px 16px;
+  }
+  .app-header {
+    max-width: 760px;
+    margin: 0 auto 6px auto;
+    width: 100%;
+  }
+  .game-arena {
+    gap: 24px;
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  /* Slim sides so the board is overwhelmingly the largest element */
   .side-widget {
-    width: 110px;
-  }
-  .kid-btn {
-    height: 70px;
-  }
-  .btn-move-left, .btn-move-right {
     width: 86px;
   }
+  .board-frame {
+    box-shadow: 0 12px 36px var(--shadow-color);
+  }
+  .pc-hint-bar {
+    display: flex;
+  }
+  .kid-controller {
+    max-width: 560px;
+    margin: 2px auto 0 auto;
+    width: 100%;
+    padding: 4px 10px;
+  }
+  .kid-btn {
+    height: 50px;
+  }
+  .btn-move-left, .btn-move-right {
+    width: 64px;
+  }
   .btn-spin, .btn-drop-down {
-    width: 100px;
+    width: 74px;
+  }
+  .btn-slam-drop {
+    width: 50px;
+    height: 48px;
+  }
+  .kid-btn-icon {
+    font-size: 20px;
+  }
+  .kid-btn-text {
+    font-size: 10px;
   }
 }

@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=2.0.0">
+  <link rel="stylesheet" href="style.css?v=3.0.0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐻</text></svg>">
 </head>
 <body class="theme-candy">
@@ -31,9 +31,9 @@
         <h1 class="logo-title">Jelly Tetris!</h1>
       </div>
 
-      <!-- Score & Stars Badges -->
+      <!-- Score & Stars Badges (Score only increases on line clear!) -->
       <div class="header-score-group">
-        <div class="badge-pill score-pill" title="Score">
+        <div class="badge-pill score-pill" title="Score (Earned by clearing lines!)">
           <span class="badge-icon">🏆</span>
           <span id="scoreVal" class="badge-val">0</span>
         </div>
@@ -54,31 +54,25 @@
       </div>
     </header>
 
-    <!-- Main Game Area -->
+    <!-- Main Game Area (Center Board Maximized on PC!) -->
     <main class="game-arena">
-      <!-- Left Side Widget: Hold Pocket & Magic Helpers -->
+      <!-- Left Side Widget: Pocket (Hold) & Magic Wand -->
       <aside class="side-widget side-left">
-        <div class="mini-card" id="btnHoldCard" title="Tap to save piece!">
+        <div class="mini-card" id="btnHoldCard" title="Pocket: Tap to save or swap block!">
           <div class="mini-card-title">🎒 POCKET</div>
-          <canvas id="holdCanvas" width="56" height="56"></canvas>
+          <canvas id="holdCanvas" width="58" height="58"></canvas>
         </div>
 
-        <div class="power-col">
-          <button id="undoBtn" class="big-power-btn" title="Oops! Undo last block">
-            <span class="big-power-icon">↩️</span>
-            <span class="big-power-label">Oops!</span>
-          </button>
-          <button id="magicWandBtn" class="big-power-btn" title="Magic Star Wand: Clears bottom row!">
-            <span class="big-power-icon">🪄</span>
-            <span class="big-power-label">Magic</span>
-          </button>
-        </div>
+        <button id="magicWandBtn" class="big-power-btn" title="Magic Star Wand: Blasts away bottom blocks!">
+          <span class="big-power-icon">🪄</span>
+          <span class="big-power-label">Magic</span>
+        </button>
       </aside>
 
-      <!-- Center: Big Clear Tetris Board -->
+      <!-- Center: Giant Clear Tetris Board -->
       <section class="board-container">
         <div class="board-frame">
-          <canvas id="gameCanvas" width="240" height="480"></canvas>
+          <canvas id="gameCanvas" width="280" height="560"></canvas>
         </div>
 
         <!-- Pop-in Celebration Banner (Starts strictly HIDDEN) -->
@@ -91,9 +85,9 @@
 
       <!-- Right Side Widget: Next Piece & Mascot Bubu -->
       <aside class="side-widget side-right">
-        <div class="mini-card">
+        <div class="mini-card" title="Next piece coming up!">
           <div class="mini-card-title">🔮 NEXT</div>
-          <canvas id="nextCanvas" width="56" height="56"></canvas>
+          <canvas id="nextCanvas" width="58" height="58"></canvas>
         </div>
 
         <!-- Cheering Mascot -->
@@ -101,7 +95,12 @@
       </aside>
     </main>
 
-    <!-- Big Chunky Kid-Friendly Controller (4 Simple Buttons!) -->
+    <!-- PC Keyboard Hint Pill (Shown nicely on desktop) -->
+    <div class="pc-hint-bar">
+      <span>⌨️ PC Controls: ◀ ▶ Move | 🔼 Spin | 🔽 Down | Space Slam</span>
+    </div>
+
+    <!-- Big Chunky Kid-Friendly Touch Controller (iPhone & iPad) -->
     <footer class="kid-controller">
       <!-- Left Hand: Move Left & Move Right -->
       <div class="ctrl-left-group">
@@ -173,7 +172,7 @@
     <div class="modal-card">
       <div class="modal-icon">🎉</div>
       <h2 class="modal-title">Super Effort!</h2>
-      <p class="modal-subtitle">You did awesome! ⭐ Stars: <strong id="finalStars">0</strong> | Score: <strong id="finalScore">0</strong></p>
+      <p class="modal-subtitle">You did awesome! ⭐ Stars: <strong id="finalStars">0</strong> | 🏆 Score: <strong id="finalScore">0</strong></p>
       <button id="restartModalBtn" class="big-play-btn">
         <span>🌟 Play Again! 🎈</span>
       </button>
@@ -181,10 +180,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="audio.js?v=2.0.0"></script>
-  <script src="particles.js?v=2.0.0"></script>
-  <script src="mascot.js?v=2.0.0"></script>
-  <script src="tetris.js?v=2.0.0"></script>
-  <script src="game.js?v=2.0.0"></script>
+  <script src="audio.js?v=3.0.0"></script>
+  <script src="particles.js?v=3.0.0"></script>
+  <script src="mascot.js?v=3.0.0"></script>
+  <script src="tetris.js?v=3.0.0"></script>
+  <script src="game.js?v=3.0.0"></script>
 </body>
 </html>

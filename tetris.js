@@ -1,5 +1,5 @@
 // Kids Tetris Engine with Kid-Friendly Rules, Cute Themes, and SRS Rotation
-// Engineered for 5-8 year old children: Visible spawns, snappy block landing, Undo, and Magic Wand!
+// Engineered for 5-8 year old children: Score strictly from clearing lines, snappy landing!
 
 const SHAPES = {
   I: [
@@ -91,10 +91,10 @@ class TetrisGame {
     this.nextCanvas = nextCanvas;
     this.nextCtx = nextCanvas ? nextCanvas.getContext('2d') : null;
 
-    // Grid Dimensions: 10 cols x 20 visible rows (NO hidden rows so pieces spawn 100% visible!)
+    // Grid Dimensions: 10 cols x 20 visible rows
     this.cols = 10;
     this.rows = 20;
-    this.blockSize = 24;
+    this.blockSize = 28;
 
     // Game Mode: 'kids' (gentle), 'zen' (no game over), 'classic'
     this.mode = 'kids';
@@ -109,30 +109,26 @@ class TetrisGame {
     this.bag = [];
     this.nextQueue = [];
 
+    // Trophy Score & Stars (Earned strictly from clearing lines!)
     this.score = 0;
     this.lines = 0;
     this.level = 1;
     this.stars = 0;
     this.combo = 0;
 
-    // Kid-Friendly Magic Power
+    // Magic Wand Power
     this.magicWandAvailable = true;
     this.magicWandCooldown = 0;
     this.magicWandTimer = null;
-
-    // Undo State
-    this.lastState = null;
 
     // Animation & Squash FX
     this.squashAmount = 0;
     this.clearingLines = [];
 
-    // Timers & Snappy Landing
+    // Drop timings
     this.dropInterval = 1000; // ms
     this.lastDropTime = 0;
-    this.lockDelay = 250; // Snappy lock delay: lands cleanly when touching
     this.lockTimer = null;
-    this.isLocking = false;
 
     this.isPaused = false;
     this.isGameOver = false;
@@ -163,7 +159,6 @@ class TetrisGame {
   }
 
   resizeCanvases() {
-    // Measure available space in parent container (.board-container)
     const container = this.canvas.closest('.board-container') || this.canvas.parentElement;
     if (!container) return;
 
@@ -174,7 +169,9 @@ class TetrisGame {
 
     const sizeByW = Math.floor(availW / this.cols);
     const sizeByH = Math.floor(availH / this.rows);
-    this.blockSize = Math.max(14, Math.min(sizeByW, sizeByH, 36));
+
+    // Dynamic block size allowing up to 48px on large PC displays!
+    this.blockSize = Math.max(16, Math.min(sizeByW, sizeByH, 48));
 
     const dpr = window.devicePixelRatio || 1;
     const boardW = this.cols * this.blockSize;
@@ -187,7 +184,7 @@ class TetrisGame {
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     if (this.holdCanvas) {
-      const hSize = 56;
+      const hSize = 58;
       this.holdCanvas.width = hSize * dpr;
       this.holdCanvas.height = hSize * dpr;
       this.holdCanvas.style.width = `${hSize}px`;
@@ -196,7 +193,7 @@ class TetrisGame {
     }
 
     if (this.nextCanvas) {
-      const nSize = 56;
+      const nSize = 58;
       this.nextCanvas.width = nSize * dpr;
       this.nextCanvas.height = nSize * dpr;
       this.nextCanvas.style.width = `${nSize}px`;
@@ -235,19 +232,15 @@ class TetrisGame {
   }
 
   spawnPiece() {
-    this.saveUndoState();
     this.currentPiece = this.nextQueue.shift();
     this.nextQueue.push(this.takePiece());
 
-    // Center piece at the very top (visible at row 0!)
     this.currentPiece.x = Math.floor((this.cols - this.currentPiece.matrix[0].length) / 2);
     this.currentPiece.y = 0;
 
     this.canHold = true;
-    this.isLocking = false;
     if (this.lockTimer) clearTimeout(this.lockTimer);
 
-    // Check collision on spawn
     if (this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y)) {
       if (this.mode === 'zen') {
         this.rescueZenMode();
@@ -274,7 +267,6 @@ class TetrisGame {
   }
 
   rescueZenMode() {
-    // Clear top 4 rows so kid never loses in Zen mode
     for (let r = 0; r < 4; r++) {
       this.grid[r] = new Array(this.cols).fill(null);
     }
@@ -322,11 +314,9 @@ class TetrisGame {
     return false;
   }
 
-  // Rotate clockwise (SPIN) with forgiving wall kicks
   rotateClockwise() {
     if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
     const original = this.currentPiece.matrix;
-    const N = original.length;
     const rotated = original.map((val, index) =>
       original.map(row => row[index]).reverse()
     );
@@ -348,30 +338,36 @@ class TetrisGame {
     return false;
   }
 
-  // Soft drop: drops 1 step down. If hitting a block, locks solidly right there!
+  // Soft drop (Down button): Moves 1 step down. NO SCORE ADDED.
   softDrop() {
     if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
     if (!this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y + 1)) {
       this.currentPiece.y++;
-      this.score += 1;
-      this.notifyStats();
       return true;
     } else {
-      // It hit another block or floor: LAND THERE IMMEDIATELY!
       this.lockPiece();
       return false;
     }
   }
 
-  // Slam hard drop: slams to bottom and locks instantly
+  // Natural gravity tick: Moves 1 step down. NO SCORE ADDED.
+  naturalDrop() {
+    if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
+    if (!this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y + 1)) {
+      this.currentPiece.y++;
+      return true;
+    } else {
+      this.lockPiece();
+      return false;
+    }
+  }
+
+  // Hard drop: slams to bottom. NO SCORE ADDED (Score only from lines!).
   hardDrop() {
     if (this.isPaused || this.isGameOver || !this.currentPiece) return;
-    let droppedRows = 0;
     while (!this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y + 1)) {
       this.currentPiece.y++;
-      droppedRows++;
     }
-    this.score += droppedRows * 2;
     this.squashAmount = 0.25;
     if (window.soundEngine) window.soundEngine.playHardDrop();
     this.lockPiece();
@@ -399,15 +395,12 @@ class TetrisGame {
     this.canHold = false;
   }
 
-  // Locks the piece into the board cleanly and solidly
   lockPiece() {
     if (!this.currentPiece) return;
     clearTimeout(this.lockTimer);
-    this.isLocking = false;
 
     const { matrix, x, y, type } = this.currentPiece;
 
-    // Stamp piece into grid
     for (let r = 0; r < matrix.length; r++) {
       for (let c = 0; c < matrix[r].length; c++) {
         if (matrix[r][c]) {
@@ -420,16 +413,14 @@ class TetrisGame {
       }
     }
 
-    // IMMEDIATELY nullify currentPiece & ghostPiece so no phantom piece lingers!
     this.currentPiece = null;
     this.ghostPiece = null;
 
     if (window.soundEngine) window.soundEngine.playLock();
-
-    // Check for completed lines
     this.checkLines();
   }
 
+  // 🏆 Score is strictly earned here when lines are completed!
   checkLines() {
     const fullRows = [];
     for (let r = 0; r < this.rows; r++) {
@@ -446,6 +437,7 @@ class TetrisGame {
       this.combo++;
       this.stars += count * 2 + (count === 4 ? 6 : 0);
 
+      // Score points exclusively from lines
       const linePoints = [0, 100, 300, 600, 1200];
       const basePoints = (linePoints[count] || 100) * this.level;
       const comboBonus = (this.combo - 1) * 50 * this.level;
@@ -459,7 +451,6 @@ class TetrisGame {
         this.onLineClear(count, this.combo, fullRows);
       }
 
-      // Safe clean line removal
       setTimeout(() => {
         const remaining = this.grid.filter((_, idx) => !fullRows.includes(idx));
         const newEmpty = Array.from({ length: fullRows.length }, () => new Array(this.cols).fill(null));
@@ -500,41 +491,9 @@ class TetrisGame {
     }
   }
 
-  // --- Kid-Friendly Power-Ups: Undo & Magic Wand ---
-
-  saveUndoState() {
-    this.lastState = {
-      grid: this.grid.map(row => [...row]),
-      score: this.score,
-      lines: this.lines,
-      level: this.level,
-      stars: this.stars,
-      combo: this.combo
-    };
-  }
-
-  undo() {
-    if (!this.lastState || this.isGameOver) return false;
-    this.grid = this.lastState.grid.map(row => [...row]);
-    this.score = this.lastState.score;
-    this.lines = this.lastState.lines;
-    this.level = this.lastState.level;
-    this.stars = this.lastState.stars;
-    this.combo = this.lastState.combo;
-
-    this.updateGhost();
-    this.notifyStats();
-    if (window.soundEngine) window.soundEngine.playUndo();
-    if (this.onMascotReact) {
-      this.onMascotReact('cheer', 'Fixed! 💫');
-    }
-    return true;
-  }
-
   useMagicWand() {
     if (!this.magicWandAvailable || this.isGameOver || this.isPaused) return false;
 
-    // Remove the bottom-most row with blocks
     for (let r = this.rows - 1; r >= 0; r--) {
       if (this.grid[r].some(cell => cell !== null)) {
         this.grid.splice(r, 1);
@@ -593,13 +552,12 @@ class TetrisGame {
     }
   }
 
-  // --- Main Update Loop ---
   update(delta) {
     if (this.isPaused || this.isGameOver || !this.currentPiece) return;
 
     const now = performance.now();
     if (now - this.lastDropTime > this.dropInterval) {
-      this.softDrop();
+      this.naturalDrop();
       this.lastDropTime = now;
     }
 
@@ -703,12 +661,10 @@ class TetrisGame {
       }
     }
 
-    // Hold and Next Previews
     this.drawHoldPreview();
     this.drawNextPreview();
   }
 
-  // Cute block with eyes and gloss
   drawCuteBlock(ctx, x, y, size, blockInfo, alpha = 1.0, isClearing = false, squash = 0) {
     if (!blockInfo) return;
     ctx.save();
@@ -744,13 +700,11 @@ class TetrisGame {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Gloss
     ctx.beginPath();
     ctx.roundRect(drawX + 2, drawY + 2, drawW - 4, drawH * 0.35, 3);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
     ctx.fill();
 
-    // Cute Eyes & Smile for kids
     if (size >= 16) {
       const cx = drawX + drawW / 2;
       const cy = drawY + drawH / 2 + 1;
@@ -800,14 +754,14 @@ class TetrisGame {
     if (!this.holdCtx) return;
     const ctx = this.holdCtx;
     const theme = THEMES[this.currentTheme] || THEMES.candy;
-    ctx.clearRect(0, 0, 56, 56);
+    ctx.clearRect(0, 0, 58, 58);
 
     if (this.holdPiece) {
       const matrix = SHAPES[this.holdPiece];
       const blockInfo = theme[this.holdPiece];
       const pSize = 13;
-      const offsetX = (56 - matrix[0].length * pSize) / 2;
-      const offsetY = (56 - matrix.length * pSize) / 2;
+      const offsetX = (58 - matrix[0].length * pSize) / 2;
+      const offsetY = (58 - matrix.length * pSize) / 2;
 
       for (let r = 0; r < matrix.length; r++) {
         for (let c = 0; c < matrix[r].length; c++) {
@@ -830,15 +784,15 @@ class TetrisGame {
     if (!this.nextCtx) return;
     const ctx = this.nextCtx;
     const theme = THEMES[this.currentTheme] || THEMES.candy;
-    ctx.clearRect(0, 0, 56, 56);
+    ctx.clearRect(0, 0, 58, 58);
 
     if (this.nextQueue.length > 0) {
       const piece = this.nextQueue[0];
       const matrix = piece.matrix;
       const blockInfo = theme[piece.type];
       const pSize = 13;
-      const offsetX = (56 - matrix[0].length * pSize) / 2;
-      const offsetY = (56 - matrix.length * pSize) / 2;
+      const offsetX = (58 - matrix[0].length * pSize) / 2;
+      const offsetY = (58 - matrix.length * pSize) / 2;
 
       for (let r = 0; r < matrix.length; r++) {
         for (let c = 0; c < matrix[r].length; c++) {

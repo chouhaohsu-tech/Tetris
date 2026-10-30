@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const restartModalBtn = document.getElementById('restartModalBtn');
   const resumeBtn = document.getElementById('resumeBtn');
   const magicWandBtn = document.getElementById('magicWandBtn');
-  const undoBtn = document.getElementById('undoBtn');
   const btnHoldCard = document.getElementById('btnHoldCard');
 
   // Big Kid Controller Buttons
@@ -285,12 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Kid Power Tools: Undo & Magic Wand ---
-  undoBtn.addEventListener('click', () => {
-    if (tetris.undo()) {
-      triggerHaptic(20);
-    }
-  });
+  // --- Kid Power Tools: Magic Wand ---
 
   function useMagicWand() {
     if (tetris.useMagicWand()) {
