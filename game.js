@@ -1,5 +1,5 @@
-// Kids Tetris Adventure Controller (v2.0)
-// Simple, large tactile controls for 5-8 year old children
+// Kids Tetris Adventure Controller (v3.1)
+// Simple, large tactile controls for 5-8 year old children with magical Halloween vibes
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
@@ -34,6 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const magicWandBtn = document.getElementById('magicWandBtn');
   const btnHoldCard = document.getElementById('btnHoldCard');
 
+  // Side Interactive Props (Magic & Halloween)
+  const witchCauldron = document.getElementById('witchCauldron');
+  const spookyPumpkin = document.getElementById('spookyPumpkin');
+  const friendlyGhost = document.getElementById('friendlyGhost');
+  const spookySpider = document.getElementById('spookySpider');
+
   // Big Kid Controller Buttons
   const btnLeft = document.getElementById('btnLeft');
   const btnRight = document.getElementById('btnRight');
@@ -61,38 +67,30 @@ document.addEventListener('DOMContentLoaded', () => {
     starsVal.textContent = stars;
   };
 
-  // Line Clear Celebration
+  // Hilarious Line Clear Celebration
   let bannerTimer = null;
   tetris.onLineClear = (count, combo, rows) => {
-    triggerHaptic(count === 4 ? 40 : 20);
+    triggerHaptic(count === 4 ? 45 : 25);
 
     const rect = gameCanvas.getBoundingClientRect();
-    const boardCenterX = rect.left + rect.width / 2;
 
-    rows.forEach(r => {
-      const rowY = rect.top + (r + 0.5) * tetris.blockSize;
-      if (count === 4) {
-        fx.spawnConfetti(boardCenterX, rowY, 40);
-        fx.spawnStars(boardCenterX, rowY, 30);
-      } else {
-        fx.spawnStars(boardCenterX, rowY, 15 * count);
-        fx.spawnHearts(boardCenterX, rowY, 6 * count);
-      }
-    });
+    // Spawn comic smoke poofs, bouncing googly eyes, flying emojis, and comical text!
+    fx.spawnRowClearHilarious(rect.left, rect.top, rows, tetris.cols, tetris.blockSize, count);
 
-    let praise = 'GREAT! ⭐';
+    let praise = 'POOF! 💨';
     if (count === 4) {
-      praise = 'MEGA TETRIS! 🌈';
+      praise = 'MEGA MAGIC! 🎃';
       mascot.setMood('dance');
       showCelebration(praise);
-      window.soundEngine.speakPraise('Mega Tetris!');
+      window.soundEngine.speakPraise('Mega Magic Tetris!');
     } else if (count >= 2) {
-      praise = 'SUPER POP! 🎉';
+      praise = 'SUPER POP! 💥';
       mascot.setMood('cheer');
       showCelebration(praise);
       window.soundEngine.speakPraise('Super Pop!');
     } else {
-      praise = 'AWESOME! ✨';
+      const singlePraises = ['SQUISH! 🤪', 'POOF! 💨', 'POP! 💥', 'AWESOME! ✨'];
+      praise = singlePraises[Math.floor(Math.random() * singlePraises.length)];
       mascot.setMood('cheer');
       showCelebration(praise);
     }
@@ -112,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     finalStarsEl.textContent = tetris.stars;
     gameOverModal.classList.remove('hidden');
     mascot.setMood('cheer');
-    mascot.say("You did awesome! 🌟 Play again?");
+    mascot.say("Super Wizard Effort! 🌟 Play again?");
   };
 
   function showCelebration(text) {
@@ -145,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startOverlay.classList.add('hidden');
     gameStarted = true;
     tetris.start();
-    mascot.say("Let's Play! 🌟");
+    mascot.say("Spooky Magic! 🎃✨");
     triggerHaptic(25);
   });
 
@@ -197,9 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'ShiftRight':
         tetris.hold();
         triggerHaptic(15);
-        break;
-      case 'KeyU':
-        tetris.undo();
         break;
       case 'KeyM':
         useMagicWand();
@@ -269,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 🔄 SPIN (Only 1 fun spin button!)
   bindKidButton(btnRotate, () => tetris.rotateClockwise(), false);
 
-  // ⬇️ DOWN (Soft Drop: lands solidly if touching block)
+  // ⬇️ DOWN (Soft Drop)
   bindKidButton(btnDown, () => tetris.softDrop(), true, 85);
 
   // ⚡ DROP (Slam Drop)
@@ -285,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Kid Power Tools: Magic Wand ---
-
   function useMagicWand() {
     if (tetris.useMagicWand()) {
       triggerHaptic(30);
@@ -304,16 +298,105 @@ document.addEventListener('DOMContentLoaded', () => {
 
   magicWandBtn.addEventListener('click', useMagicWand);
 
-  // Theme Switcher
-  const themes = ['candy', 'animals', 'galaxy'];
+  // --- Interactive Side Props (Magic & Halloween Vibe!) ---
+
+  // 1. Bubbling Witch Cauldron
+  if (witchCauldron) {
+    witchCauldron.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      window.soundEngine.ensureContext();
+      window.soundEngine.playCauldronBubble();
+      triggerHaptic(18);
+
+      const rect = witchCauldron.getBoundingClientRect();
+      fx.spawnCauldronBurst(rect.left + rect.width / 2, rect.top + 15);
+
+      witchCauldron.classList.remove('prop-bounce');
+      void witchCauldron.offsetWidth;
+      witchCauldron.classList.add('prop-bounce');
+
+      const cauldronPhrases = ['Bubble bubble! 🧪', 'Secret Potion! 🔮', 'Magic Brew! ✨', 'Fizzing! 🫧'];
+      mascot.say(cauldronPhrases[Math.floor(Math.random() * cauldronPhrases.length)], 2000);
+    });
+  }
+
+  // 2. Glowing Jack-o'-Lantern Pumpkin
+  if (spookyPumpkin) {
+    spookyPumpkin.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      window.soundEngine.ensureContext();
+      window.soundEngine.playPumpkinChuckle();
+      triggerHaptic(18);
+
+      const rect = spookyPumpkin.getBoundingClientRect();
+      fx.spawnPumpkinEmbers(rect.left + rect.width / 2, rect.top + 15);
+
+      spookyPumpkin.classList.remove('prop-bounce');
+      void spookyPumpkin.offsetWidth;
+      spookyPumpkin.classList.add('prop-bounce');
+
+      const pumpkinPhrases = ['Pumpkin Chuckle! 🎃', 'Glow Bright! 🌟', 'Trick or Treat! 🍬', 'Happy Halloween! 🧡'];
+      mascot.say(pumpkinPhrases[Math.floor(Math.random() * pumpkinPhrases.length)], 2000);
+    });
+  }
+
+  // 3. Friendly Peek-a-boo Ghost
+  if (friendlyGhost) {
+    friendlyGhost.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      window.soundEngine.ensureContext();
+      window.soundEngine.playGhostGiggle();
+      triggerHaptic(18);
+
+      const rect = friendlyGhost.getBoundingClientRect();
+      fx.spawnGhostHearts(rect.left + rect.width / 2, rect.top + 15);
+
+      friendlyGhost.classList.remove('ghost-spin-anim');
+      void friendlyGhost.offsetWidth;
+      friendlyGhost.classList.add('ghost-spin-anim');
+
+      const ghostPhrases = ['Boo! Hehehe! 👻', 'Ghost Hug! 💖', 'Floaty Floaty! ✨', 'Friendly Casper! 🌟'];
+      mascot.say(ghostPhrases[Math.floor(Math.random() * ghostPhrases.length)], 2000);
+    });
+  }
+
+  // 4. Hanging Cute Spider
+  if (spookySpider) {
+    spookySpider.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      window.soundEngine.ensureContext();
+      window.soundEngine.playSpiderBounce();
+      triggerHaptic(15);
+
+      const rect = spookySpider.getBoundingClientRect();
+      fx.spawnStars(rect.left + rect.width / 2, rect.bottom, 8, ['#9D4EDD', '#00F5D4', '#FFD166']);
+
+      spookySpider.classList.remove('spider-drop-anim');
+      void spookySpider.offsetWidth;
+      spookySpider.classList.add('spider-drop-anim');
+
+      const spiderPhrases = ['Boing! 🕷️', 'Spider Swing! 🕸️', 'Tickle tickle! 💖'];
+      mascot.say(spiderPhrases[Math.floor(Math.random() * spiderPhrases.length)], 1800);
+    });
+  }
+
+  // Theme Switcher (Includes Spooky Magic, Candy, Animals, Galaxy)
+  const themeList = ['spooky', 'candy', 'animals', 'galaxy'];
   let currentThemeIdx = 0;
   themeBtn.addEventListener('click', () => {
-    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-    const themeKey = themes[currentThemeIdx];
-    tetris.currentTheme = themeKey;
+    currentThemeIdx = (currentThemeIdx + 1) % themeList.length;
+    const themeKey = themeList[currentThemeIdx];
+    tetris.currentTheme = (themeKey === 'spooky' ? 'halloween' : themeKey);
     document.body.className = `theme-${themeKey}`;
     window.soundEngine.playClick();
-    mascot.say(`New Theme! ✨`);
+
+    const themeNames = {
+      spooky: 'Spooky Magic 🎃',
+      candy: 'Candy Land 🍬',
+      animals: 'Animal Friends 🐱',
+      galaxy: 'Galaxy Stars 🚀'
+    };
+    mascot.say(`${themeNames[themeKey] || 'New Theme!'} ✨`);
   });
 
   // Sound Toggle

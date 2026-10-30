@@ -5,30 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#FFB6C1">
+  <meta name="theme-color" content="#160D29">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Jelly Blocks! 🐻✨ Cute Kids Tetris</title>
+  <title>Jelly Blocks! 🎃✨ Spooky Magic Kids Tetris</title>
 
   <!-- Google Fonts: Fredoka & Nunito -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=3.0.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐻</text></svg>">
+  <link rel="stylesheet" href="style.css?v=3.1.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>">
 </head>
-<body class="theme-candy">
-  <!-- Particle FX Canvas overlay -->
+<body class="theme-spooky">
+  <!-- Fullscreen Particle FX Canvas overlay -->
   <canvas id="fxCanvas"></canvas>
+
+  <!-- Ambient Spooky Magic Flanks for Desktop / Wide screens -->
+  <aside class="ambient-flank flank-left" aria-hidden="true">
+    <div class="flank-art tower-art">
+      <span class="flying-bat bat-1">🦇</span>
+      <span class="flying-bat bat-2">🦇</span>
+      <div class="magic-crystal crystal-1" title="Mystic Crystal">💎</div>
+      <div class="magic-spellbook" title="Ancient Grimoire">📖✨</div>
+    </div>
+  </aside>
+
+  <aside class="ambient-flank flank-right" aria-hidden="true">
+    <div class="flank-art tree-art">
+      <div class="glowing-moon" title="Mystic Full Moon">🌕</div>
+      <span class="flying-bat bat-3">🦇</span>
+      <div class="magic-crystal crystal-2" title="Crystal Orb">🔮</div>
+      <div class="magic-candle candle-float" title="Floating Candle">🕯️</div>
+    </div>
+  </aside>
 
   <div class="app-layout">
     <!-- Top Header: Simple & Large for Kids -->
     <header class="app-header">
       <div class="header-left">
-        <span class="logo-emoji">🐻</span>
-        <h1 class="logo-title">Jelly Tetris!</h1>
+        <span class="logo-emoji">🎃</span>
+        <h1 class="logo-title">Magic Tetris!</h1>
       </div>
 
       <!-- Score & Stars Badges (Score only increases on line clear!) -->
@@ -56,17 +75,59 @@
 
     <!-- Main Game Area (Center Board Maximized on PC!) -->
     <main class="game-arena">
-      <!-- Left Side Widget: Pocket (Hold) & Magic Wand -->
+      <!-- Left Side Widget: Spider, Pocket (Hold), Magic Wand & Witch Cauldron -->
       <aside class="side-widget side-left">
-        <div class="mini-card" id="btnHoldCard" title="Pocket: Tap to save or swap block!">
+        <!-- Cute Hanging Animated Spider -->
+        <div class="spooky-spider-wrap" id="spookySpider" title="Boing! Tap the friendly spider!">
+          <div class="spider-thread"></div>
+          <div class="spider-body">🕷️</div>
+        </div>
+
+        <div class="mini-card magic-card" id="btnHoldCard" title="Pocket: Tap to save or swap block!">
           <div class="mini-card-title">🎒 POCKET</div>
           <canvas id="holdCanvas" width="58" height="58"></canvas>
         </div>
 
-        <button id="magicWandBtn" class="big-power-btn" title="Magic Star Wand: Blasts away bottom blocks!">
+        <button id="magicWandBtn" class="big-power-btn magic-wand-btn" title="Magic Star Wand: Blasts away bottom blocks!">
           <span class="big-power-icon">🪄</span>
           <span class="big-power-label">Magic</span>
         </button>
+
+        <!-- Bubbling Witch's Cauldron (Interactive!) -->
+        <div class="side-prop-item cauldron-wrap" id="witchCauldron" title="Tap to stir the magic potion!">
+          <div class="cauldron-potion-glow"></div>
+          <svg class="cauldron-svg" viewBox="0 0 70 65" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="cauldronGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3F3F46" />
+                <stop offset="100%" stop-color="#18181B" />
+              </linearGradient>
+              <linearGradient id="potionGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00F5D4" />
+                <stop offset="50%" stop-color="#70FFF0" />
+                <stop offset="100%" stop-color="#06D6A0" />
+              </linearGradient>
+            </defs>
+            <!-- Glowing Embers underneath -->
+            <ellipse cx="35" cy="58" rx="20" ry="4" fill="#FF9F1C" opacity="0.75" />
+            <circle cx="28" cy="57" r="2.5" fill="#FF5E7E" />
+            <circle cx="42" cy="57" r="2.5" fill="#FFD166" />
+            <!-- Cauldron Legs -->
+            <path d="M 20 48 L 16 58 L 22 58 Z" fill="#27272A" />
+            <path d="M 50 48 L 54 58 L 48 58 Z" fill="#27272A" />
+            <!-- Cauldron Pot Body -->
+            <ellipse cx="35" cy="38" rx="26" ry="18" fill="url(#cauldronGrad)" stroke="#52525B" stroke-width="2" />
+            <!-- Cauldron Rim -->
+            <ellipse cx="35" cy="24" rx="22" ry="6" fill="#27272A" stroke="#71717A" stroke-width="2" />
+            <!-- Bubbling Magic Potion Surface -->
+            <ellipse cx="35" cy="24" rx="18" ry="4.5" fill="url(#potionGrad)" />
+            <!-- Animated Rising Bubbles -->
+            <circle class="c-bubble b1" cx="30" cy="22" r="3" fill="#00F5D4" />
+            <circle class="c-bubble b2" cx="40" cy="20" r="2.5" fill="#70FFF0" />
+            <circle class="c-bubble b3" cx="35" cy="16" r="2" fill="#FFFFFF" />
+          </svg>
+          <span class="prop-label">Brew 🧪</span>
+        </div>
       </aside>
 
       <!-- Center: Giant Clear Tetris Board -->
@@ -83,21 +144,55 @@
         </div>
       </section>
 
-      <!-- Right Side Widget: Next Piece & Mascot Bubu -->
+      <!-- Right Side Widget: Ghost, Next Piece, Mascot Wizard Bubu & Glowing Pumpkin -->
       <aside class="side-widget side-right">
-        <div class="mini-card" title="Next piece coming up!">
+        <!-- Floating Friendly Peek-a-boo Ghost (Interactive!) -->
+        <div class="spooky-ghost-wrap" id="friendlyGhost" title="Boo! Tap the friendly ghost!">
+          <div class="ghost-float-body">👻</div>
+        </div>
+
+        <div class="mini-card magic-card" title="Next piece coming up!">
           <div class="mini-card-title">🔮 NEXT</div>
           <canvas id="nextCanvas" width="58" height="58"></canvas>
         </div>
 
-        <!-- Cheering Mascot -->
+        <!-- Cheering Wizard Mascot Bubu -->
         <div class="mascot-display" id="mascotContainer"></div>
+
+        <!-- Glowing Jack-o'-Lantern Pumpkin (Interactive!) -->
+        <div class="side-prop-item pumpkin-wrap" id="spookyPumpkin" title="Tap to light the pumpkin!">
+          <svg class="pumpkin-svg" viewBox="0 0 68 62" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="pumpkinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#FF9233" />
+                <stop offset="50%" stop-color="#FF6B00" />
+                <stop offset="100%" stop-color="#CC4E00" />
+              </linearGradient>
+            </defs>
+            <!-- Shadow -->
+            <ellipse cx="34" cy="57" rx="24" ry="4" fill="rgba(0,0,0,0.25)" />
+            <!-- Stem -->
+            <path d="M 33 16 Q 31 6 40 8 Q 36 12 36 16 Z" fill="#2E7D32" />
+            <!-- Pumpkin Ribs / Body -->
+            <ellipse cx="34" cy="36" rx="27" ry="20" fill="url(#pumpkinGrad)" stroke="#B33E00" stroke-width="1.8" />
+            <ellipse cx="34" cy="36" rx="18" ry="20" fill="none" stroke="#D95300" stroke-width="1.6" />
+            <ellipse cx="34" cy="36" rx="9" ry="20" fill="none" stroke="#D95300" stroke-width="1.4" />
+            <!-- Glowing Carved Eyes -->
+            <polygon class="pumpkin-glow eye-left" points="24,28 20,34 28,34" fill="#FFD166" />
+            <polygon class="pumpkin-glow eye-right" points="44,28 40,34 48,34" fill="#FFD166" />
+            <!-- Carved Nose -->
+            <polygon class="pumpkin-glow nose" points="34,36 31,40 37,40" fill="#FFD166" />
+            <!-- Carved Glowing Tooth Smile -->
+            <path class="pumpkin-glow mouth" d="M 23 44 Q 34 52 45 44 Q 42 47 38 45 Q 36 49 32 45 Q 28 47 23 44 Z" fill="#FFD166" />
+          </svg>
+          <span class="prop-label">Spooky 🎃</span>
+        </div>
       </aside>
     </main>
 
     <!-- PC Keyboard Hint Pill (Shown nicely on desktop) -->
     <div class="pc-hint-bar">
-      <span>⌨️ PC Controls: ◀ ▶ Move | 🔼 Spin | 🔽 Down | Space Slam</span>
+      <span>⌨️ PC Controls: ◀ ▶ Move | 🔼 Spin | 🔽 Down | Space Slam | C Pocket</span>
     </div>
 
     <!-- Big Chunky Kid-Friendly Touch Controller (iPhone & iPad) -->
@@ -139,8 +234,8 @@
   <!-- Start Game Overlay for Kids -->
   <div id="startOverlay" class="modal-overlay">
     <div class="modal-card start-modal-card">
-      <div class="modal-icon">🐻✨</div>
-      <h2 class="modal-title">Jelly Tetris!</h2>
+      <div class="modal-icon">🎃✨</div>
+      <h2 class="modal-title">Spooky Magic Tetris!</h2>
       <p class="modal-subtitle">Choose how you want to play:</p>
 
       <div class="mode-selector">
@@ -150,7 +245,7 @@
       </div>
 
       <button id="playStartBtn" class="big-play-btn">
-        <span>▶️ TAP TO PLAY! 🎈</span>
+        <span>▶️ TAP TO PLAY! 🎃</span>
       </button>
     </div>
   </div>
@@ -160,7 +255,7 @@
     <div class="modal-card">
       <div class="modal-icon">💤</div>
       <h2 class="modal-title">Game Paused!</h2>
-      <p class="modal-subtitle">Take a gentle break or stretch your paws! 🐾</p>
+      <p class="modal-subtitle">Resting with the friendly ghosts & pumpkins! 🎃</p>
       <button id="resumeBtn" class="big-play-btn">
         <span>▶️ Continue Playing!</span>
       </button>
@@ -171,19 +266,19 @@
   <div id="gameOverModal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-icon">🎉</div>
-      <h2 class="modal-title">Super Effort!</h2>
+      <h2 class="modal-title">Super Wizard Effort!</h2>
       <p class="modal-subtitle">You did awesome! ⭐ Stars: <strong id="finalStars">0</strong> | 🏆 Score: <strong id="finalScore">0</strong></p>
       <button id="restartModalBtn" class="big-play-btn">
-        <span>🌟 Play Again! 🎈</span>
+        <span>🌟 Play Again! 🎃</span>
       </button>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="audio.js?v=3.0.0"></script>
-  <script src="particles.js?v=3.0.0"></script>
-  <script src="mascot.js?v=3.0.0"></script>
-  <script src="tetris.js?v=3.0.0"></script>
-  <script src="game.js?v=3.0.0"></script>
+  <script src="audio.js?v=3.1.0"></script>
+  <script src="particles.js?v=3.1.0"></script>
+  <script src="mascot.js?v=3.1.0"></script>
+  <script src="tetris.js?v=3.1.0"></script>
+  <script src="game.js?v=3.1.0"></script>
 </body>
 </html>

@@ -1,32 +1,54 @@
 /* Jelly Blocks: Kids Tetris Adventure Stylesheet */
 /* Designed specifically for kids aged 5-8, iPhone, iPad, and PC */
+/* Enhanced with rich Spooky Magic & Halloween aesthetics, animated side props, and comical effects */
 
 :root {
   --font-main: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bg-gradient: linear-gradient(135deg, #120924 0%, #200D3D 35%, #341254 70%, #15082B 100%);
+  --panel-bg: rgba(28, 15, 48, 0.92);
+  --panel-border: #9D4EDD;
+  --text-color: #FFF9F0;
+  --text-muted: #D8B4FE;
+  --accent-pink: #FF5E7E;
+  --accent-yellow: #FFD166;
+  --accent-blue: #00F5D4;
+  --accent-green: #06D6A0;
+  --accent-purple: #9D4EDD;
+  --accent-primary: #FF9F1C;
+  --shadow-color: rgba(157, 78, 221, 0.45);
+}
+
+/* --- Themes --- */
+
+/* 1. Spooky Magic / Halloween (Default!) */
+body.theme-spooky {
+  --bg-gradient: radial-gradient(ellipse at 50% 15%, rgba(123, 44, 191, 0.35) 0%, rgba(18, 9, 36, 0.98) 75%), linear-gradient(135deg, #100820 0%, #1C0C38 40%, #2B104E 75%, #120824 100%);
+  --panel-bg: rgba(26, 14, 46, 0.94);
+  --panel-border: #9D4EDD;
+  --text-color: #FFF9F0;
+  --text-muted: #D8B4FE;
+  --accent-primary: #FF9F1C;
+  --shadow-color: rgba(157, 78, 221, 0.45);
+}
+
+body.theme-candy {
   --bg-gradient: linear-gradient(135deg, #FFE5EC 0%, #FFF0F5 45%, #E0F2FE 100%);
   --panel-bg: rgba(255, 255, 255, 0.95);
   --panel-border: #FFB6C1;
   --text-color: #2B2D42;
   --text-muted: #8D99AE;
-  --accent-pink: #FF5E7E;
-  --accent-yellow: #FFD166;
-  --accent-blue: #4D96FF;
-  --accent-green: #2ED573;
-  --accent-purple: #9B5DE5;
-  --shadow-color: rgba(43, 45, 66, 0.14);
-}
-
-/* Themes */
-body.theme-candy {
-  --bg-gradient: linear-gradient(135deg, #FFE5EC 0%, #FFF0F5 45%, #E0F2FE 100%);
-  --panel-border: #FFB6C1;
   --accent-primary: #FF5E7E;
+  --shadow-color: rgba(43, 45, 66, 0.14);
 }
 
 body.theme-animals {
   --bg-gradient: linear-gradient(135deg, #E8F5E9 0%, #E3F2FD 50%, #FFF9C4 100%);
+  --panel-bg: rgba(255, 255, 255, 0.95);
   --panel-border: #81C784;
+  --text-color: #2B2D42;
+  --text-muted: #8D99AE;
   --accent-primary: #4CAF50;
+  --shadow-color: rgba(43, 45, 66, 0.14);
 }
 
 body.theme-galaxy {
@@ -36,6 +58,7 @@ body.theme-galaxy {
   --text-color: #F8F9FA;
   --text-muted: #ADB5BD;
   --accent-primary: #BE2EDD;
+  --shadow-color: rgba(155, 93, 229, 0.35);
 }
 
 /* Global resets & fixes */
@@ -74,6 +97,85 @@ html, body {
   z-index: 99;
 }
 
+/* ======================================================== */
+/* Ambient Spooky Magic Side Flanks (Desktop / Wide Screens) */
+/* ======================================================== */
+.ambient-flank {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 180px;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.flank-left {
+  left: 12px;
+}
+
+.flank-right {
+  right: 12px;
+}
+
+.flank-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Glowing Moon */
+.glowing-moon {
+  position: absolute;
+  top: 36px;
+  right: 24px;
+  font-size: 52px;
+  filter: drop-shadow(0 0 20px rgba(255, 230, 109, 0.75));
+  animation: moonPulse 4s infinite ease-in-out;
+}
+
+/* Flying Bats */
+.flying-bat {
+  position: absolute;
+  font-size: 24px;
+  filter: drop-shadow(0 0 8px rgba(157, 78, 221, 0.6));
+  animation: batFlutter 3s infinite ease-in-out;
+}
+
+.bat-1 { top: 60px; left: 20px; animation-delay: 0s; }
+.bat-2 { top: 140px; left: 70px; font-size: 20px; animation-delay: 1.5s; }
+.bat-3 { top: 110px; right: 65px; font-size: 22px; animation-delay: 0.8s; }
+
+/* Floating Crystals & Props */
+.magic-crystal {
+  position: absolute;
+  font-size: 32px;
+  filter: drop-shadow(0 0 15px rgba(0, 245, 212, 0.8));
+  animation: floatSlow 3.5s infinite ease-in-out;
+}
+
+.crystal-1 { top: 240px; left: 35px; animation-delay: 0.5s; }
+.crystal-2 { top: 220px; right: 35px; animation-delay: 1.2s; }
+
+.magic-spellbook {
+  position: absolute;
+  top: 360px;
+  left: 30px;
+  font-size: 38px;
+  filter: drop-shadow(0 0 16px rgba(255, 159, 28, 0.7));
+  animation: floatSlow 4s infinite ease-in-out 1s;
+}
+
+.magic-candle {
+  position: absolute;
+  top: 350px;
+  right: 32px;
+  font-size: 34px;
+  filter: drop-shadow(0 0 14px rgba(255, 209, 102, 0.85));
+  animation: candleFlicker 2.5s infinite ease-in-out;
+}
+
 /* App Main Container */
 .app-layout {
   display: flex;
@@ -96,9 +198,11 @@ html, body {
   background: var(--panel-bg);
   border-radius: 20px;
   border: 3px solid var(--panel-border);
-  box-shadow: 0 4px 12px var(--shadow-color);
+  box-shadow: 0 4px 16px var(--shadow-color);
   margin-bottom: 6px;
   flex-shrink: 0;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .header-left {
@@ -115,7 +219,7 @@ html, body {
 .logo-title {
   font-size: 19px;
   font-weight: 800;
-  background: linear-gradient(45deg, #FF5E7E, #FFA502);
+  background: linear-gradient(45deg, #FF9F1C, #FFD166, #C77DFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -131,11 +235,16 @@ html, body {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: #FFF;
+  background: rgba(255, 255, 255, 0.12);
   border: 2px solid var(--panel-border);
   border-radius: 18px;
   padding: 4px 12px;
-  box-shadow: 0 2px 6px var(--shadow-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+body.theme-candy .badge-pill,
+body.theme-animals .badge-pill {
+  background: #FFF;
 }
 
 .badge-icon {
@@ -145,7 +254,8 @@ html, body {
 .badge-val {
   font-size: 17px;
   font-weight: 900;
-  color: var(--accent-pink);
+  color: #FFD166;
+  text-shadow: 0 0 8px rgba(255, 209, 102, 0.6);
 }
 
 .stars-pill .badge-val {
@@ -162,24 +272,32 @@ html, body {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #FFF;
+  background: rgba(255, 255, 255, 0.15);
   border: 2px solid var(--panel-border);
   font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.12);
-  transition: transform 0.08s, box-shadow 0.08s;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  transition: transform 0.08s, box-shadow 0.08s, background 0.15s;
   touch-action: manipulation;
+  color: var(--text-color);
+}
+
+body.theme-candy .tool-circle-btn,
+body.theme-animals .tool-circle-btn {
+  background: #FFF;
 }
 
 .tool-circle-btn:active {
   transform: translateY(3px);
-  box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
-/* Main Arena: Maximized Center Board! */
+/* ======================================================== */
+/* Main Arena: Maximized Center Board & Cool Magic Sides!   */
+/* ======================================================== */
 .game-arena {
   display: flex;
   flex: 1;
@@ -191,40 +309,115 @@ html, body {
   overflow: hidden;
 }
 
-/* Compact Side Cards: Hold & Next */
+/* Compact Side Widgets: Left & Right */
 .side-widget {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width: 90px;
   flex-shrink: 0;
+  position: relative;
 }
 
+/* Hanging Cute Spider at top of left widget */
+.spooky-spider-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: -2px;
+  animation: spiderSwing 3.5s infinite ease-in-out;
+  transform-origin: top center;
+  z-index: 8;
+}
+
+.spider-thread {
+  width: 1.5px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+.spider-body {
+  font-size: 19px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+  transition: transform 0.15s;
+}
+
+.spooky-spider-wrap:hover .spider-body {
+  transform: scale(1.2);
+}
+
+.spider-drop-anim {
+  animation: spiderDropBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Floating Friendly Ghost above next card */
+.spooky-ghost-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: -2px;
+  animation: ghostFloat 3s infinite ease-in-out;
+  z-index: 8;
+}
+
+.ghost-float-body {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.8));
+  transition: transform 0.15s;
+}
+
+.spooky-ghost-wrap:hover .ghost-float-body {
+  transform: scale(1.25);
+}
+
+.ghost-spin-anim {
+  animation: ghostSpin 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Cards (Pocket & Next) */
 .mini-card {
   background: var(--panel-bg);
   border: 3px solid var(--panel-border);
   border-radius: 16px;
-  padding: 6px;
-  box-shadow: 0 4px 10px var(--shadow-color);
+  padding: 5px;
+  box-shadow: 0 4px 14px var(--shadow-color);
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.1s, border-color 0.15s;
+}
+
+.magic-card {
+  box-shadow: 0 0 14px var(--shadow-color), 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .mini-card-title {
   font-size: 11px;
   font-weight: 800;
-  color: var(--accent-pink);
+  color: var(--accent-primary);
   margin-bottom: 3px;
   letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(255, 159, 28, 0.5);
 }
 
 .mini-card canvas {
   display: block;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+body.theme-candy .mini-card canvas,
+body.theme-animals .mini-card canvas {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 /* Mascot Display */
@@ -233,27 +426,33 @@ html, body {
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  margin-top: 2px;
 }
 
 .mascot-bubble {
-  background: #FFF;
-  border: 2px solid var(--accent-pink);
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
   border-radius: 12px;
   padding: 3px 8px;
   font-size: 11px;
   font-weight: 800;
   color: var(--text-color);
-  box-shadow: 0 3px 6px var(--shadow-color);
+  box-shadow: 0 3px 8px var(--shadow-color);
   margin-bottom: -4px;
   white-space: nowrap;
   z-index: 5;
   transition: opacity 0.25s, transform 0.25s;
 }
 
+body.theme-candy .mascot-bubble,
+body.theme-animals .mascot-bubble {
+  background: #FFF;
+}
+
 .mascot-svg {
   width: 78px;
   height: 84px;
-  filter: drop-shadow(0 3px 5px var(--shadow-color));
+  filter: drop-shadow(0 4px 8px var(--shadow-color));
 }
 
 /* Kid Power: Magic Wand */
@@ -262,20 +461,27 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #FFFDF0;
+  background: linear-gradient(180deg, #38125E 0%, #200B3B 100%);
   border: 2.5px solid #FFD166;
   border-radius: 16px;
-  padding: 8px 4px;
+  padding: 6px 4px;
   width: 100%;
   cursor: pointer;
-  box-shadow: 0 4px 0 #E2B742;
+  box-shadow: 0 4px 0 #9D4EDD, 0 0 12px rgba(255, 209, 102, 0.4);
   transition: transform 0.08s, box-shadow 0.08s;
   touch-action: manipulation;
+  color: var(--text-color);
+}
+
+body.theme-candy .big-power-btn,
+body.theme-animals .big-power-btn {
+  background: #FFFDF0;
+  box-shadow: 0 4px 0 #E2B742;
 }
 
 .big-power-btn:active:not(:disabled) {
   transform: translateY(3px);
-  box-shadow: 0 1px 0 #E2B742;
+  box-shadow: 0 1px 0 #9D4EDD;
 }
 
 .big-power-btn:disabled {
@@ -284,17 +490,86 @@ html, body {
 }
 
 .big-power-icon {
-  font-size: 22px;
+  font-size: 20px;
+  animation: wandSparkle 2s infinite ease-in-out;
 }
 
 .big-power-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  color: var(--text-color);
-  margin-top: 2px;
+  color: #FFD166;
+  margin-top: 1px;
 }
 
-/* Center Board: Dominant & Big! */
+/* ======================================================== */
+/* Interactive Side Props: Cauldron & Jack-o'-Lantern       */
+/* ======================================================== */
+.side-prop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px dashed rgba(157, 78, 221, 0.6);
+  border-radius: 14px;
+  padding: 4px;
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: visible;
+}
+
+.side-prop-item:hover {
+  transform: scale(1.04);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #FFD166;
+}
+
+.side-prop-item:active {
+  transform: scale(0.96);
+}
+
+.prop-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: #D8B4FE;
+  margin-top: 2px;
+  letter-spacing: 0.4px;
+}
+
+/* Bubbling Cauldron */
+.cauldron-svg {
+  width: 60px;
+  height: 52px;
+  filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.5));
+}
+
+.c-bubble {
+  animation: bubbleRise 2s infinite ease-in-out;
+}
+.b1 { animation-delay: 0s; }
+.b2 { animation-delay: 0.6s; }
+.b3 { animation-delay: 1.2s; }
+
+/* Jack-o'-Lantern Pumpkin */
+.pumpkin-svg {
+  width: 60px;
+  height: 52px;
+  filter: drop-shadow(0 0 10px rgba(255, 159, 28, 0.6));
+}
+
+.pumpkin-glow {
+  animation: candleFlicker 2.5s infinite ease-in-out;
+}
+
+.prop-bounce {
+  animation: propBounce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ======================================================== */
+/* Center Board: Dominant & Big!                            */
+/* ======================================================== */
 .board-container {
   display: flex;
   align-items: center;
@@ -311,18 +586,29 @@ html, body {
   border: 4px solid var(--panel-border);
   border-radius: 20px;
   padding: 4px;
-  box-shadow: 0 8px 28px var(--shadow-color);
+  box-shadow: 0 0 28px rgba(157, 78, 221, 0.4), 0 8px 32px rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   max-height: 100%;
   max-width: 100%;
+  transition: box-shadow 0.25s;
 }
 
 #gameCanvas {
   display: block;
   border-radius: 14px;
-  background: #FFF;
+  background: #160D29;
+}
+
+body.theme-candy #gameCanvas {
+  background: #FFF5F7;
+}
+body.theme-animals #gameCanvas {
+  background: #F3F9FF;
+}
+body.theme-galaxy #gameCanvas {
+  background: #181A2A;
 }
 
 /* Celebration Banner */
@@ -336,13 +622,13 @@ html, body {
 }
 
 .banner-inner {
-  background: linear-gradient(135deg, #FF5E7E, #FFA502);
+  background: linear-gradient(135deg, #FF9F1C, #FF5E7E, #9D4EDD);
   color: #FFF;
-  padding: 12px 24px;
+  padding: 12px 26px;
   border-radius: 30px;
   border: 4px solid #FFF;
-  box-shadow: 0 8px 25px rgba(255, 94, 126, 0.6);
-  font-size: 24px;
+  box-shadow: 0 0 30px rgba(255, 159, 28, 0.8), 0 8px 25px rgba(0, 0, 0, 0.4);
+  font-size: 25px;
   font-weight: 900;
   white-space: nowrap;
   letter-spacing: 1px;
@@ -383,7 +669,6 @@ html, body {
   align-items: center;
 }
 
-/* Giant, tactile, colorful buttons for small hands */
 .kid-btn {
   display: flex;
   flex-direction: column;
@@ -406,45 +691,49 @@ html, body {
 /* ◀ Move Left */
 .btn-move-left {
   width: 72px;
-  background: linear-gradient(180deg, #E8F4FD 0%, #D0EAFF 100%);
-  border-color: #4D96FF;
-  box-shadow: 0 6px 0 #2A75E6;
+  background: linear-gradient(180deg, #1A365D 0%, #0F2342 100%);
+  border-color: #00F5D4;
+  box-shadow: 0 6px 0 #009688, 0 0 12px rgba(0, 245, 212, 0.35);
+  color: #00F5D4;
 }
 .btn-move-left:active, .btn-move-left.btn-active {
-  box-shadow: 0 1px 0 #2A75E6;
+  box-shadow: 0 1px 0 #009688;
 }
 
 /* ▶ Move Right */
 .btn-move-right {
   width: 72px;
-  background: linear-gradient(180deg, #E8F4FD 0%, #D0EAFF 100%);
-  border-color: #4D96FF;
-  box-shadow: 0 6px 0 #2A75E6;
+  background: linear-gradient(180deg, #1A365D 0%, #0F2342 100%);
+  border-color: #00F5D4;
+  box-shadow: 0 6px 0 #009688, 0 0 12px rgba(0, 245, 212, 0.35);
+  color: #00F5D4;
 }
 .btn-move-right:active, .btn-move-right.btn-active {
-  box-shadow: 0 1px 0 #2A75E6;
+  box-shadow: 0 1px 0 #009688;
 }
 
 /* 🔄 SPIN */
 .btn-spin {
   width: 82px;
-  background: linear-gradient(180deg, #FFE5EC 0%, #FFB6C1 100%);
-  border-color: #FF5E7E;
-  box-shadow: 0 6px 0 #E03E60;
+  background: linear-gradient(180deg, #4A154B 0%, #2E0B30 100%);
+  border-color: #C77DFF;
+  box-shadow: 0 6px 0 #7B2CBF, 0 0 12px rgba(199, 125, 255, 0.35);
+  color: #FFD1DC;
 }
 .btn-spin:active, .btn-spin.btn-active {
-  box-shadow: 0 1px 0 #E03E60;
+  box-shadow: 0 1px 0 #7B2CBF;
 }
 
 /* ⬇️ DOWN */
 .btn-drop-down {
   width: 82px;
-  background: linear-gradient(180deg, #E8F8EE 0%, #B7EFC5 100%);
-  border-color: #2ED573;
-  box-shadow: 0 6px 0 #1FA855;
+  background: linear-gradient(180deg, #0F3F2E 0%, #08261C 100%);
+  border-color: #06D6A0;
+  box-shadow: 0 6px 0 #048A66, 0 0 12px rgba(6, 214, 160, 0.35);
+  color: #A7F3D0;
 }
 .btn-drop-down:active, .btn-drop-down.btn-active {
-  box-shadow: 0 1px 0 #1FA855;
+  box-shadow: 0 1px 0 #048A66;
 }
 
 .kid-btn-icon {
@@ -455,7 +744,7 @@ html, body {
 .kid-btn-text {
   font-size: 11px;
   font-weight: 900;
-  color: #2B2D42;
+  color: #FFF;
   margin-top: 2px;
   letter-spacing: 0.5px;
 }
@@ -469,9 +758,10 @@ html, body {
 .btn-slam-drop {
   width: 58px;
   height: 60px;
-  background: linear-gradient(180deg, #FFF9DB 0%, #FFE066 100%);
-  border-color: #F59F00;
-  box-shadow: 0 6px 0 #D97706;
+  background: linear-gradient(180deg, #5C3806 0%, #3B2404 100%);
+  border-color: #FFD166;
+  box-shadow: 0 6px 0 #D97706, 0 0 14px rgba(255, 209, 102, 0.45);
+  color: #FFD166;
 }
 .btn-slam-drop:active, .btn-slam-drop.btn-active {
   box-shadow: 0 1px 0 #D97706;
@@ -484,9 +774,9 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(14, 7, 26, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -495,20 +785,21 @@ html, body {
 }
 
 .modal-card {
-  background: #FFF;
+  background: #231238;
   border-radius: 26px;
-  border: 4px solid var(--accent-pink);
+  border: 4px solid var(--panel-border);
   padding: 22px;
   max-width: 360px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 30px rgba(157, 78, 221, 0.5), 0 12px 32px rgba(0, 0, 0, 0.5);
   animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: #FFF;
 }
 
 .start-modal-card {
-  border-color: #FFD166;
-  background: #FFFCF5;
+  border-color: #FF9F1C;
+  background: #2A1144;
 }
 
 .modal-icon {
@@ -519,8 +810,9 @@ html, body {
 .modal-title {
   font-size: 23px;
   font-weight: 800;
-  color: var(--text-color);
+  color: #FFD166;
   margin-bottom: 6px;
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.5);
 }
 
 .modal-subtitle {
@@ -541,20 +833,20 @@ html, body {
   padding: 6px 12px;
   border-radius: 16px;
   border: 2px solid var(--panel-border);
-  background: #FFF;
+  background: rgba(255, 255, 255, 0.1);
   font-family: var(--font-main);
   font-size: 13px;
   font-weight: 800;
-  color: var(--text-color);
+  color: #FFF;
   cursor: pointer;
-  box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
 }
 
 .mode-chip.active {
-  background: var(--accent-pink);
-  color: #FFF;
-  border-color: var(--accent-pink);
-  box-shadow: 0 3px 0 #D63353;
+  background: #FF9F1C;
+  color: #1A0E2E;
+  border-color: #FF9F1C;
+  box-shadow: 0 3px 0 #C76B00;
 }
 
 .big-play-btn {
@@ -567,18 +859,20 @@ html, body {
   font-weight: 900;
   color: #FFF;
   cursor: pointer;
-  background: linear-gradient(135deg, #FF5E7E 0%, #FFA502 100%);
-  box-shadow: 0 6px 0 #E04868;
+  background: linear-gradient(135deg, #FF9F1C 0%, #FF5E7E 50%, #9D4EDD 100%);
+  box-shadow: 0 6px 0 #7B2CBF, 0 0 20px rgba(255, 159, 28, 0.6);
   transition: transform 0.08s, box-shadow 0.08s;
   touch-action: manipulation;
 }
 
 .big-play-btn:active {
   transform: translateY(4px);
-  box-shadow: 0 2px 0 #E04868;
+  box-shadow: 0 2px 0 #7B2CBF;
 }
 
-/* Animations */
+/* ======================================================== */
+/* Keyframe Animations                                      */
+/* ======================================================== */
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
@@ -596,8 +890,71 @@ html, body {
   100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
 }
 
+@keyframes moonPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 18px rgba(255, 230, 109, 0.7)); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 28px rgba(255, 230, 109, 0.95)); }
+}
+
+@keyframes batFlutter {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-8px) rotate(-8deg); }
+  75% { transform: translateY(4px) rotate(8deg); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes candleFlicker {
+  0%, 100% { opacity: 0.95; filter: drop-shadow(0 0 6px rgba(255, 209, 102, 0.8)); }
+  30% { opacity: 0.75; filter: drop-shadow(0 0 3px rgba(255, 209, 102, 0.5)); }
+  60% { opacity: 1.0; filter: drop-shadow(0 0 10px rgba(255, 209, 102, 1)); }
+}
+
+@keyframes bubbleRise {
+  0% { transform: translateY(0) scale(0.7); opacity: 0.9; }
+  50% { transform: translateY(-6px) scale(1.1); opacity: 1; }
+  100% { transform: translateY(-14px) scale(0.5); opacity: 0; }
+}
+
+@keyframes spiderSwing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  75% { transform: rotate(-8deg); }
+}
+
+@keyframes spiderDropBounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(22px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes ghostFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(4deg); }
+}
+
+@keyframes ghostSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.3); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes propBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.22); }
+  70% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wandSparkle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(12deg) scale(1.15); filter: drop-shadow(0 0 6px #FFD166); }
+}
+
 /* ======================================================== */
-/* Responsive Tweaks: Mobile, Tablet, and PC */
+/* Responsive Tweaks: Mobile, Tablet, and PC                */
 /* ======================================================== */
 
 /* Small Screens (iPhone in Portrait) */
@@ -624,18 +981,28 @@ html, body {
 
   .side-widget {
     width: 68px;
-    gap: 6px;
+    gap: 4px;
   }
   .mini-card {
-    padding: 4px;
+    padding: 3px;
     border-radius: 12px;
   }
   .mini-card-title {
-    font-size: 9px;
+    font-size: 8.5px;
   }
   .mascot-svg {
-    width: 62px;
-    height: 68px;
+    width: 58px;
+    height: 64px;
+  }
+  .cauldron-svg, .pumpkin-svg {
+    width: 48px;
+    height: 42px;
+  }
+  .ghost-float-body {
+    font-size: 18px;
+  }
+  .spider-body {
+    font-size: 16px;
   }
 
   .kid-controller {
@@ -643,7 +1010,7 @@ html, body {
     gap: 6px;
   }
   .kid-btn {
-    height: 56px;
+    height: 54px;
     border-radius: 16px;
   }
   .btn-move-left, .btn-move-right {
@@ -654,10 +1021,10 @@ html, body {
   }
   .btn-slam-drop {
     width: 48px;
-    height: 54px;
+    height: 52px;
   }
   .kid-btn-icon {
-    font-size: 22px;
+    font-size: 20px;
   }
   .kid-btn-text {
     font-size: 9px;
@@ -673,7 +1040,7 @@ html, body {
     width: 86px;
   }
   .kid-btn {
-    height: 68px;
+    height: 66px;
   }
   .btn-move-left, .btn-move-right {
     width: 78px;
@@ -683,8 +1050,12 @@ html, body {
   }
 }
 
-/* PC / Desktop (Browser on PC: Hero Board!) */
+/* PC / Desktop (Browser on PC: Hero Board with Flanks!) */
 @media (min-width: 1025px) {
+  .ambient-flank {
+    display: block; /* Show magical side flanks on desktop! */
+  }
+
   .app-layout {
     max-width: 1080px;
     padding: 8px 16px;
@@ -695,17 +1066,13 @@ html, body {
     width: 100%;
   }
   .game-arena {
-    gap: 24px;
+    gap: 22px;
     max-width: 760px;
     margin: 0 auto;
     width: 100%;
   }
-  /* Slim sides so the board is overwhelmingly the largest element */
   .side-widget {
-    width: 86px;
-  }
-  .board-frame {
-    box-shadow: 0 12px 36px var(--shadow-color);
+    width: 88px;
   }
   .pc-hint-bar {
     display: flex;
@@ -717,17 +1084,17 @@ html, body {
     padding: 4px 10px;
   }
   .kid-btn {
-    height: 50px;
+    height: 52px;
   }
   .btn-move-left, .btn-move-right {
-    width: 64px;
+    width: 66px;
   }
   .btn-spin, .btn-drop-down {
-    width: 74px;
+    width: 76px;
   }
   .btn-slam-drop {
-    width: 50px;
-    height: 48px;
+    width: 52px;
+    height: 50px;
   }
   .kid-btn-icon {
     font-size: 20px;

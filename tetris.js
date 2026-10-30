@@ -39,8 +39,21 @@ const SHAPES = {
   ]
 };
 
-// Cute color themes with candy gradients & emojis
+// Cute color themes with candy gradients, spooky magic, and emojis
 const THEMES = {
+  halloween: {
+    name: 'Spooky Magic 🎃🔮',
+    I: { base: '#00F5D4', light: '#70FFF0', dark: '#00B4D8', emoji: '👻' }, // Ghostly cyan
+    J: { base: '#7B2CBF', light: '#9D4EDD', dark: '#5A189A', emoji: '🔮' }, // Mystic amethyst
+    L: { base: '#FF6B35', light: '#FFA07A', dark: '#D9480F', emoji: '🎃' }, // Pumpkin orange
+    O: { base: '#FFD166', light: '#FFE494', dark: '#F48C06', emoji: '🍬' }, // Candy corn yellow
+    S: { base: '#06D6A0', light: '#52B788', dark: '#00875A', emoji: '🧪' }, // Witch potion green
+    T: { base: '#C77DFF', light: '#E0AAFF', dark: '#9D4EDD', emoji: '🧙' }, // Witch purple
+    Z: { base: '#FF3366', light: '#FF758F', dark: '#C9184A', emoji: '🦇' }, // Vampire crimson
+    bg: '#160D29',
+    grid: 'rgba(157, 78, 221, 0.28)',
+    border: '#9D4EDD'
+  },
   candy: {
     name: 'Candy Land 🍬',
     I: { base: '#48CAE4', light: '#90E0EF', dark: '#0096C7', emoji: '💎' },
@@ -98,7 +111,7 @@ class TetrisGame {
 
     // Game Mode: 'kids' (gentle), 'zen' (no game over), 'classic'
     this.mode = 'kids';
-    this.currentTheme = 'candy';
+    this.currentTheme = 'halloween'; // Default to Spooky Magic!
 
     // State Variables
     this.grid = [];
@@ -121,9 +134,14 @@ class TetrisGame {
     this.magicWandCooldown = 0;
     this.magicWandTimer = null;
 
-    // Animation & Squash FX
-    this.squashAmount = 0;
+    // Hilarious Row Cancellation Animation state
+    this.isClearing = false;
+    this.clearStartTime = 0;
+    this.clearDuration = 480; // ms
     this.clearingLines = [];
+    this.clearingFaces = {}; // cell faces
+    this.squashAmount = 0;
+    this.gridBounce = 0;
 
     // Drop timings
     this.dropInterval = 1000; // ms
@@ -152,6 +170,8 @@ class TetrisGame {
   start() {
     this.isGameOver = false;
     this.isPaused = false;
+    this.isClearing = false;
+    this.clearingLines = [];
     this.resetGrid();
     this.spawnPiece();
     this.updateGhost();
@@ -170,7 +190,6 @@ class TetrisGame {
     const sizeByW = Math.floor(availW / this.cols);
     const sizeByH = Math.floor(availH / this.rows);
 
-    // Dynamic block size allowing up to 48px on large PC displays!
     this.blockSize = Math.max(16, Math.min(sizeByW, sizeByH, 48));
 
     const dpr = window.devicePixelRatio || 1;
@@ -262,7 +281,7 @@ class TetrisGame {
       }
     }
     if (highestBlockRow <= 4 && this.onMascotReact) {
-      this.onMascotReact('worried', 'Stack is high! 🐰💦');
+      this.onMascotReact('worried', 'Stack is high! 🎃💦');
     }
   }
 
@@ -293,7 +312,7 @@ class TetrisGame {
   }
 
   moveLeft() {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.currentPiece) return false;
     if (!this.collides(this.currentPiece.matrix, this.currentPiece.x - 1, this.currentPiece.y)) {
       this.currentPiece.x--;
       this.updateGhost();
@@ -304,7 +323,7 @@ class TetrisGame {
   }
 
   moveRight() {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.currentPiece) return false;
     if (!this.collides(this.currentPiece.matrix, this.currentPiece.x + 1, this.currentPiece.y)) {
       this.currentPiece.x++;
       this.updateGhost();
@@ -314,8 +333,9 @@ class TetrisGame {
     return false;
   }
 
+  // Enhanced rotation with sound
   rotateClockwise() {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.currentPiece) return false;
     const original = this.currentPiece.matrix;
     const rotated = original.map((val, index) =>
       original.map(row => row[index]).reverse()
@@ -338,9 +358,8 @@ class TetrisGame {
     return false;
   }
 
-  // Soft drop (Down button): Moves 1 step down. NO SCORE ADDED.
   softDrop() {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.currentPiece) return false;
     if (!this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y + 1)) {
       this.currentPiece.y++;
       return true;
@@ -350,9 +369,8 @@ class TetrisGame {
     }
   }
 
-  // Natural gravity tick: Moves 1 step down. NO SCORE ADDED.
   naturalDrop() {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return false;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.currentPiece) return false;
     if (!this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y + 1)) {
       this.currentPiece.y++;
       return true;
@@ -362,19 +380,18 @@ class TetrisGame {
     }
   }
 
-  // Hard drop: slams to bottom. NO SCORE ADDED (Score only from lines!).
   hardDrop() {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.currentPiece) return;
     while (!this.collides(this.currentPiece.matrix, this.currentPiece.x, this.currentPiece.y + 1)) {
       this.currentPiece.y++;
     }
-    this.squashAmount = 0.25;
+    this.squashAmount = 0.28;
     if (window.soundEngine) window.soundEngine.playHardDrop();
     this.lockPiece();
   }
 
   hold() {
-    if (this.isPaused || this.isGameOver || !this.canHold || !this.currentPiece) return;
+    if (this.isPaused || this.isGameOver || this.isClearing || !this.canHold || !this.currentPiece) return;
     if (window.soundEngine) window.soundEngine.playHold();
 
     const currentType = this.currentPiece.type;
@@ -421,6 +438,7 @@ class TetrisGame {
   }
 
   // 🏆 Score is strictly earned here when lines are completed!
+  // Triggers hilarious animated cancellation sequence!
   checkLines() {
     const fullRows = [];
     for (let r = 0; r < this.rows; r++) {
@@ -430,14 +448,23 @@ class TetrisGame {
     }
 
     if (fullRows.length > 0) {
+      this.isClearing = true;
+      this.clearStartTime = performance.now();
       this.clearingLines = fullRows;
+
+      // Assign comical faces to each clearing cell
+      this.clearingFaces = {};
+      fullRows.forEach(r => {
+        for (let c = 0; c < this.cols; c++) {
+          this.clearingFaces[`${r}_${c}`] = Math.floor(Math.random() * 4); // 0: dizzy, 1: googly, 2: screaming, 3: funny tongue
+        }
+      });
 
       const count = fullRows.length;
       this.lines += count;
       this.combo++;
       this.stars += count * 2 + (count === 4 ? 6 : 0);
 
-      // Score points exclusively from lines
       const linePoints = [0, 100, 300, 600, 1200];
       const basePoints = (linePoints[count] || 100) * this.level;
       const comboBonus = (this.combo - 1) * 50 * this.level;
@@ -450,15 +477,6 @@ class TetrisGame {
       if (this.onLineClear) {
         this.onLineClear(count, this.combo, fullRows);
       }
-
-      setTimeout(() => {
-        const remaining = this.grid.filter((_, idx) => !fullRows.includes(idx));
-        const newEmpty = Array.from({ length: fullRows.length }, () => new Array(this.cols).fill(null));
-        this.grid = [...newEmpty, ...remaining];
-        this.clearingLines = [];
-        this.spawnPiece();
-        this.notifyStats();
-      }, 200);
     } else {
       this.combo = 0;
       this.spawnPiece();
@@ -492,7 +510,7 @@ class TetrisGame {
   }
 
   useMagicWand() {
-    if (!this.magicWandAvailable || this.isGameOver || this.isPaused) return false;
+    if (!this.magicWandAvailable || this.isGameOver || this.isPaused || this.isClearing) return false;
 
     for (let r = this.rows - 1; r >= 0; r--) {
       if (this.grid[r].some(cell => cell !== null)) {
@@ -538,6 +556,8 @@ class TetrisGame {
   restart() {
     this.isGameOver = false;
     this.isPaused = false;
+    this.isClearing = false;
+    this.clearingLines = [];
     this.score = 0;
     this.lines = 0;
     this.level = 1;
@@ -553,10 +573,27 @@ class TetrisGame {
   }
 
   update(delta) {
-    if (this.isPaused || this.isGameOver || !this.currentPiece) return;
+    if (this.isPaused || this.isGameOver) return;
+
+    // Handle hilarious row clearing animation timing
+    if (this.isClearing) {
+      const elapsed = performance.now() - this.clearStartTime;
+      if (elapsed >= this.clearDuration) {
+        // Clear finished: remove rows and collapse stack
+        const remaining = this.grid.filter((_, idx) => !this.clearingLines.includes(idx));
+        const newEmpty = Array.from({ length: this.clearingLines.length }, () => new Array(this.cols).fill(null));
+        this.grid = [...newEmpty, ...remaining];
+        this.isClearing = false;
+        this.clearingLines = [];
+        this.gridBounce = 6; // Jelly bounce as stack lands
+        this.spawnPiece();
+        this.notifyStats();
+      }
+      return; // Pause falling during funny animation
+    }
 
     const now = performance.now();
-    if (now - this.lastDropTime > this.dropInterval) {
+    if (this.currentPiece && now - this.lastDropTime > this.dropInterval) {
       this.naturalDrop();
       this.lastDropTime = now;
     }
@@ -564,11 +601,15 @@ class TetrisGame {
     if (this.squashAmount > 0) {
       this.squashAmount = Math.max(0, this.squashAmount - 0.03);
     }
+
+    if (this.gridBounce > 0) {
+      this.gridBounce = Math.max(0, this.gridBounce - 0.4);
+    }
   }
 
   draw() {
     const ctx = this.ctx;
-    const theme = THEMES[this.currentTheme] || THEMES.candy;
+    const theme = THEMES[this.currentTheme] || THEMES.halloween;
 
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -592,6 +633,8 @@ class TetrisGame {
       ctx.stroke();
     }
 
+    const clearProgress = this.isClearing ? Math.min(1.0, (performance.now() - this.clearStartTime) / this.clearDuration) : 0;
+
     // Placed Blocks
     for (let r = 0; r < this.rows; r++) {
       const isClearing = this.clearingLines.includes(r);
@@ -599,21 +642,26 @@ class TetrisGame {
         const type = this.grid[r][c];
         if (type) {
           const blockInfo = theme[type];
+          const faceVariant = isClearing ? (this.clearingFaces[`${r}_${c}`] ?? 0) : 0;
+          const bounceOffset = (!isClearing && r < (this.clearingLines[0] ?? -1)) ? this.gridBounce : 0;
+
           this.drawCuteBlock(
             ctx,
             c * this.blockSize,
-            r * this.blockSize,
+            r * this.blockSize + bounceOffset,
             this.blockSize,
             blockInfo,
-            isClearing ? 0.35 : 1.0,
-            isClearing
+            isClearing,
+            clearProgress,
+            faceVariant,
+            0
           );
         }
       }
     }
 
     // Ghost Piece
-    if (this.ghostPiece && this.currentPiece) {
+    if (this.ghostPiece && this.currentPiece && !this.isClearing) {
       const { matrix, x, y, type } = this.ghostPiece;
       const blockInfo = theme[type];
       for (let r = 0; r < matrix.length; r++) {
@@ -636,7 +684,7 @@ class TetrisGame {
     }
 
     // Active Falling Piece
-    if (this.currentPiece) {
+    if (this.currentPiece && !this.isClearing) {
       const { matrix, x, y, type } = this.currentPiece;
       const blockInfo = theme[type];
       for (let r = 0; r < matrix.length; r++) {
@@ -651,8 +699,9 @@ class TetrisGame {
                 gy * this.blockSize,
                 this.blockSize,
                 blockInfo,
-                1.0,
                 false,
+                0,
+                0,
                 this.squashAmount
               );
             }
@@ -665,21 +714,22 @@ class TetrisGame {
     this.drawNextPreview();
   }
 
-  drawCuteBlock(ctx, x, y, size, blockInfo, alpha = 1.0, isClearing = false, squash = 0) {
+  // Draw cute block with support for HILARIOUS cartoon cancellation animations!
+  drawCuteBlock(ctx, x, y, size, blockInfo, isClearing = false, clearProgress = 0, faceVariant = 0, squash = 0) {
     if (!blockInfo) return;
     ctx.save();
-    ctx.globalAlpha = alpha;
 
-    const pad = 1.5;
-    const radius = 5;
-    const w = size - pad * 2;
-    const h = size - pad * 2;
-
+    let alpha = 1.0;
+    let pad = 1.5;
+    let radius = 5;
+    let w = size - pad * 2;
+    let h = size - pad * 2;
     let drawX = x + pad;
     let drawY = y + pad;
     let drawW = w;
     let drawH = h;
 
+    // Normal squash (landing)
     if (squash > 0) {
       drawH = h * (1 - squash);
       drawW = w * (1 + squash * 0.5);
@@ -687,12 +737,48 @@ class TetrisGame {
       drawX = x + pad - (drawW - w) / 2;
     }
 
+    // --- HILARIOUS ROW CLEAR ANIMATION TRANSFORMS ---
+    if (isClearing) {
+      const p = clearProgress;
+      if (p < 0.38) {
+        // Phase 1: Comic Shudder & Pop-out Swell!
+        const shudder = Math.sin(p * 50) * 4 * (1 - p);
+        drawX += shudder;
+        const swell = Math.sin(p * Math.PI / 0.38) * 0.25;
+        drawW = w * (1 + swell);
+        drawH = h * (1 + swell);
+        drawX -= (drawW - w) / 2;
+        drawY -= (drawH - h) / 2;
+      } else {
+        // Phase 2: Pop into dust / flying spin!
+        const p2 = (p - 0.38) / 0.62;
+        alpha = Math.max(0, 1.0 - p2 * 1.5);
+        const shrink = 1.0 - p2 * 0.5;
+        drawW = w * shrink;
+        drawH = h * shrink;
+        drawX += (w - drawW) / 2 + (faceVariant % 2 === 0 ? 1 : -1) * p2 * 12;
+        drawY -= p2 * 18; // Float up like popped bubbles
+      }
+    }
+
+    ctx.globalAlpha = alpha;
+
+    // Outer block body
     ctx.beginPath();
     ctx.roundRect(drawX, drawY, drawW, drawH, radius);
     const grad = ctx.createLinearGradient(drawX, drawY, drawX, drawY + drawH);
-    grad.addColorStop(0, blockInfo.light);
-    grad.addColorStop(0.5, blockInfo.base);
-    grad.addColorStop(1, blockInfo.dark);
+
+    if (isClearing && clearProgress < 0.38) {
+      // Golden/rainbow flash when clearing!
+      grad.addColorStop(0, '#FFF9DB');
+      grad.addColorStop(0.5, blockInfo.light);
+      grad.addColorStop(1, blockInfo.base);
+    } else {
+      grad.addColorStop(0, blockInfo.light);
+      grad.addColorStop(0.5, blockInfo.base);
+      grad.addColorStop(1, blockInfo.dark);
+    }
+
     ctx.fillStyle = grad;
     ctx.fill();
 
@@ -700,34 +786,123 @@ class TetrisGame {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
+    // Gloss highlight
     ctx.beginPath();
     ctx.roundRect(drawX + 2, drawY + 2, drawW - 4, drawH * 0.35, 3);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
     ctx.fill();
 
+    // --- CUTE OR HILARIOUS FACES ---
     if (size >= 16) {
       const cx = drawX + drawW / 2;
       const cy = drawY + drawH / 2 + 1;
       const eyeOffsetX = drawW * 0.22;
-      const eyeRadius = Math.max(1.5, drawW * 0.08);
+      const eyeRadius = Math.max(1.8, drawW * 0.085);
 
-      ctx.fillStyle = '#2B2D42';
-      ctx.beginPath();
-      ctx.arc(cx - eyeOffsetX, cy - 1, eyeRadius, 0, Math.PI * 2);
-      ctx.arc(cx + eyeOffsetX, cy - 1, eyeRadius, 0, Math.PI * 2);
-      ctx.fill();
+      if (isClearing) {
+        // Hilarious animated face variants when row cancels!
+        if (faceVariant === 0) {
+          // 🌀 Dizzy Spiral Eyes
+          ctx.strokeStyle = '#2B2D42';
+          ctx.lineWidth = 1.5;
+          [-eyeOffsetX, eyeOffsetX].forEach(ox => {
+            ctx.beginPath();
+            ctx.arc(cx + ox, cy - 2, eyeRadius * 1.2, 0, Math.PI * 3.5);
+            ctx.stroke();
+          });
+          // Wavy mouth
+          ctx.beginPath();
+          ctx.moveTo(cx - 5, cy + 5);
+          ctx.quadraticCurveTo(cx - 2, cy + 2, cx, cy + 5);
+          ctx.quadraticCurveTo(cx + 2, cy + 8, cx + 5, cy + 5);
+          ctx.stroke();
 
-      ctx.fillStyle = '#FFFFFF';
-      ctx.beginPath();
-      ctx.arc(cx - eyeOffsetX - 0.5, cy - 1.5, eyeRadius * 0.4, 0, Math.PI * 2);
-      ctx.arc(cx + eyeOffsetX - 0.5, cy - 1.5, eyeRadius * 0.4, 0, Math.PI * 2);
-      ctx.fill();
+        } else if (faceVariant === 1) {
+          // 👀 Bulging Googly Eyes popping out!
+          [-eyeOffsetX, eyeOffsetX].forEach((ox, i) => {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(cx + ox, cy - 3, eyeRadius * 1.6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#2B2D42';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
 
-      ctx.beginPath();
-      ctx.arc(cx, cy + drawH * 0.12, eyeRadius * 1.1, 0.1 * Math.PI, 0.9 * Math.PI);
-      ctx.strokeStyle = '#2B2D42';
-      ctx.lineWidth = 1.1;
-      ctx.stroke();
+            // Pupil looking goofy
+            ctx.fillStyle = '#2B2D42';
+            ctx.beginPath();
+            ctx.arc(cx + ox + (i === 0 ? 1.5 : -1.5), cy - 3, eyeRadius * 0.8, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          // Wide screaming "O" mouth
+          ctx.fillStyle = '#FF5E7E';
+          ctx.beginPath();
+          ctx.arc(cx, cy + 5, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+        } else if (faceVariant === 2) {
+          // 🤪 Wacky Wink & Tongue Out!
+          // Left eye wink
+          ctx.strokeStyle = '#2B2D42';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx - eyeOffsetX - 4, cy - 2);
+          ctx.lineTo(cx - eyeOffsetX + 4, cy - 2);
+          ctx.stroke();
+          // Right eye big
+          ctx.fillStyle = '#2B2D42';
+          ctx.beginPath();
+          ctx.arc(cx + eyeOffsetX, cy - 2, eyeRadius * 1.3, 0, Math.PI * 2);
+          ctx.fill();
+          // Tongue sticking out
+          ctx.fillStyle = '#FF4757';
+          ctx.beginPath();
+          ctx.arc(cx, cy + 6, 3.5, 0, Math.PI);
+          ctx.fill();
+          ctx.stroke();
+
+        } else {
+          // 😱 Shocked Gasp Face `(°Д°)`
+          [-eyeOffsetX, eyeOffsetX].forEach(ox => {
+            ctx.fillStyle = '#2B2D42';
+            ctx.beginPath();
+            ctx.arc(cx + ox, cy - 4, eyeRadius * 1.4, 0, Math.PI * 2);
+            ctx.fill();
+            // Eyebrows raised high
+            ctx.strokeStyle = '#2B2D42';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.arc(cx + ox, cy - 8, 4, Math.PI * 1.1, Math.PI * 1.9);
+            ctx.stroke();
+          });
+          // Huge gaping jaw
+          ctx.fillStyle = '#2B2D42';
+          ctx.beginPath();
+          ctx.ellipse(cx, cy + 6, 4.5, 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+      } else {
+        // Normal Cute Smiling Face
+        ctx.fillStyle = '#2B2D42';
+        ctx.beginPath();
+        ctx.arc(cx - eyeOffsetX, cy - 1, eyeRadius, 0, Math.PI * 2);
+        ctx.arc(cx + eyeOffsetX, cy - 1, eyeRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(cx - eyeOffsetX - 0.5, cy - 1.5, eyeRadius * 0.4, 0, Math.PI * 2);
+        ctx.arc(cx + eyeOffsetX - 0.5, cy - 1.5, eyeRadius * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy + drawH * 0.12, eyeRadius * 1.1, 0.1 * Math.PI, 0.9 * Math.PI);
+        ctx.strokeStyle = '#2B2D42';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
     }
 
     ctx.restore();
@@ -736,7 +911,7 @@ class TetrisGame {
   drawGhostBlock(ctx, x, y, size, blockInfo) {
     if (!blockInfo) return;
     ctx.save();
-    ctx.globalAlpha = 0.35;
+    ctx.globalAlpha = 0.38;
     const pad = 1.5;
     const radius = 5;
     ctx.beginPath();
@@ -753,7 +928,7 @@ class TetrisGame {
   drawHoldPreview() {
     if (!this.holdCtx) return;
     const ctx = this.holdCtx;
-    const theme = THEMES[this.currentTheme] || THEMES.candy;
+    const theme = THEMES[this.currentTheme] || THEMES.halloween;
     ctx.clearRect(0, 0, 58, 58);
 
     if (this.holdPiece) {
@@ -772,7 +947,10 @@ class TetrisGame {
               offsetY + r * pSize,
               pSize,
               blockInfo,
-              this.canHold ? 1.0 : 0.4
+              false,
+              0,
+              0,
+              0
             );
           }
         }
@@ -783,7 +961,7 @@ class TetrisGame {
   drawNextPreview() {
     if (!this.nextCtx) return;
     const ctx = this.nextCtx;
-    const theme = THEMES[this.currentTheme] || THEMES.candy;
+    const theme = THEMES[this.currentTheme] || THEMES.halloween;
     ctx.clearRect(0, 0, 58, 58);
 
     if (this.nextQueue.length > 0) {
@@ -802,7 +980,11 @@ class TetrisGame {
               offsetX + c * pSize,
               offsetY + r * pSize,
               pSize,
-              blockInfo
+              blockInfo,
+              false,
+              0,
+              0,
+              0
             );
           }
         }
