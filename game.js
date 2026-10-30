@@ -1,5 +1,5 @@
-// Main Game Controller for Kids Tetris Adventure
-// Orchestrates inputs, touch gestures, haptics, UI, and audio
+// Kids Tetris Adventure Controller (v2.0)
+// Simple, large tactile controls for 5-8 year old children
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
@@ -11,11 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Stats Elements
   const scoreVal = document.getElementById('scoreVal');
-  const linesVal = document.getElementById('linesVal');
-  const levelVal = document.getElementById('levelVal');
   const starsVal = document.getElementById('starsVal');
 
   // Modals & Overlays
+  const startOverlay = document.getElementById('startOverlay');
+  const playStartBtn = document.getElementById('playStartBtn');
   const pauseOverlay = document.getElementById('pauseOverlay');
   const gameOverModal = document.getElementById('gameOverModal');
   const finalScoreEl = document.getElementById('finalScore');
@@ -23,106 +23,84 @@ document.addEventListener('DOMContentLoaded', () => {
   const celebrationBanner = document.getElementById('celebrationBanner');
   const praiseText = document.getElementById('praiseText');
 
-  // Buttons & Controls
+  // Tool Buttons
   const soundBtn = document.getElementById('soundBtn');
   const soundIcon = document.getElementById('soundIcon');
   const themeBtn = document.getElementById('themeBtn');
-  const modeBtn = document.getElementById('modeBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const restartBtn = document.getElementById('restartBtn');
   const restartModalBtn = document.getElementById('restartModalBtn');
   const resumeBtn = document.getElementById('resumeBtn');
   const magicWandBtn = document.getElementById('magicWandBtn');
   const undoBtn = document.getElementById('undoBtn');
+  const btnHoldCard = document.getElementById('btnHoldCard');
 
-  // On-screen Gamepad Controls
+  // Big Kid Controller Buttons
   const btnLeft = document.getElementById('btnLeft');
   const btnRight = document.getElementById('btnRight');
+  const btnRotate = document.getElementById('btnRotate');
   const btnDown = document.getElementById('btnDown');
   const btnDrop = document.getElementById('btnDrop');
-  const btnRotate = document.getElementById('btnRotate');
-  const btnRotateCCW = document.getElementById('btnRotateCCW');
-  const btnHold = document.getElementById('btnHold');
 
-  // Initialize FX and Mascot
+  // Instantiate Engines
   const fx = new ParticleEngine(fxCanvas);
   const mascot = new MascotCompanion(mascotContainer);
   const tetris = new TetrisGame(gameCanvas, holdCanvas, nextCanvas);
 
-  // Setup Haptics helper
+  let gameStarted = false;
+
+  // Haptic feedback
   const triggerHaptic = (ms = 15) => {
     if ('vibrate' in navigator) {
       try { navigator.vibrate(ms); } catch (e) {}
     }
   };
 
-  // --- Hooking Tetris Events to Visual & Sound FX ---
-
+  // Score & Stat Updates
   tetris.onScoreUpdate = (score, lines, level, stars) => {
     scoreVal.textContent = score.toLocaleString();
-    linesVal.textContent = lines;
-    levelVal.textContent = level;
     starsVal.textContent = stars;
-
-    // Pop animation on stats
-    scoreVal.parentElement.classList.remove('stat-pop');
-    void scoreVal.parentElement.offsetWidth;
-    scoreVal.parentElement.classList.add('stat-pop');
   };
 
+  // Line Clear Celebration
+  let bannerTimer = null;
   tetris.onLineClear = (count, combo, rows) => {
-    triggerHaptic(count === 4 ? 45 : 25);
+    triggerHaptic(count === 4 ? 40 : 20);
 
-    // Get screen coordinates of the game board
     const rect = gameCanvas.getBoundingClientRect();
     const boardCenterX = rect.left + rect.width / 2;
 
-    // Spawn FX for each cleared line
     rows.forEach(r => {
-      const displayY = r - tetris.hiddenRows;
-      const rowY = rect.top + (displayY + 0.5) * tetris.blockSize;
-
+      const rowY = rect.top + (r + 0.5) * tetris.blockSize;
       if (count === 4) {
-        fx.spawnConfetti(boardCenterX, rowY, 45);
-        fx.spawnStars(boardCenterX, rowY, 35);
-        fx.spawnShockwave(boardCenterX, rowY, 'rgba(255, 94, 126, 0.9)');
+        fx.spawnConfetti(boardCenterX, rowY, 40);
+        fx.spawnStars(boardCenterX, rowY, 30);
       } else {
         fx.spawnStars(boardCenterX, rowY, 15 * count);
         fx.spawnHearts(boardCenterX, rowY, 6 * count);
-        fx.spawnShockwave(boardCenterX, rowY);
       }
     });
 
-    // Banners & Mascot Reactions
-    let praise = 'Super! ⭐';
+    let praise = 'GREAT! ⭐';
     if (count === 4) {
-      praise = 'MEGA TETRIS! 🌈🎉';
+      praise = 'MEGA TETRIS! 🌈';
       mascot.setMood('dance');
       showCelebration(praise);
-      window.soundEngine.speakPraise('Mega Tetris! Incredible!');
-    } else if (count === 3) {
-      praise = 'TRIPLE CLEAR! 🌟🌟🌟';
-      mascot.setMood('dance');
-      showCelebration(praise);
-      window.soundEngine.speakPraise('Triple Clear! Amazing!');
-    } else if (count === 2) {
-      praise = 'DOUBLE POP! 🎈🎈';
+      window.soundEngine.speakPraise('Mega Tetris!');
+    } else if (count >= 2) {
+      praise = 'SUPER POP! 🎉';
       mascot.setMood('cheer');
       showCelebration(praise);
-      window.soundEngine.speakPraise('Double Pop!');
+      window.soundEngine.speakPraise('Super Pop!');
     } else {
-      praise = 'GREAT! 💫';
+      praise = 'AWESOME! ✨';
       mascot.setMood('cheer');
-      window.soundEngine.speakPraise('Good job!');
-    }
-
-    if (combo > 1) {
-      fx.spawnFloatingText(`COMBO x${combo}! 🔥`, boardCenterX, rect.top + 80, '#FFD166', 32);
+      showCelebration(praise);
     }
 
     setTimeout(() => {
       if (!tetris.isGameOver) mascot.setMood('idle');
-    }, 3500);
+    }, 2800);
   };
 
   tetris.onMascotReact = (mood, text) => {
@@ -144,25 +122,48 @@ document.addEventListener('DOMContentLoaded', () => {
     void celebrationBanner.offsetWidth;
     celebrationBanner.classList.add('banner-anim');
 
-    setTimeout(() => {
+    if (bannerTimer) clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(() => {
       celebrationBanner.classList.add('hidden');
-    }, 2400);
+    }, 1800);
   }
 
-  // --- Keyboard Controls ---
+  // --- Start Game Screen ---
+  const modeChips = document.querySelectorAll('.mode-chip');
+  modeChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      modeChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      tetris.mode = chip.dataset.mode;
+      tetris.updateSpeed();
+      window.soundEngine.playClick();
+    });
+  });
+
+  playStartBtn.addEventListener('click', () => {
+    window.soundEngine.ensureContext();
+    window.soundEngine.startBGM();
+    startOverlay.classList.add('hidden');
+    gameStarted = true;
+    tetris.start();
+    mascot.say("Let's Play! 🌟");
+    triggerHaptic(25);
+  });
+
+  // --- Keyboard Shortcuts (PC) ---
   const keyState = {};
   window.addEventListener('keydown', (e) => {
-    // Resume audio on first interaction
+    if (!gameStarted) return;
     window.soundEngine.ensureContext();
-    if (window.soundEngine && !window.soundEngine.bgmPlaying && !window.soundEngine.isMuted) {
+    if (!window.soundEngine.bgmPlaying && !window.soundEngine.isMuted) {
       window.soundEngine.startBGM();
     }
 
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
-      e.preventDefault(); // Prevent browser scrolling
+      e.preventDefault();
     }
 
-    if (keyState[e.code]) return; // Avoid key repeat stutter
+    if (keyState[e.code]) return;
     keyState[e.code] = true;
 
     if (tetris.isGameOver) return;
@@ -184,23 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
         tetris.rotateClockwise();
         triggerHaptic(15);
         break;
-      case 'KeyZ':
-        tetris.rotateCounterClockwise();
-        triggerHaptic(15);
-        break;
       case 'ArrowDown':
       case 'KeyS':
         tetris.softDrop();
         break;
       case 'Space':
         tetris.hardDrop();
-        triggerHaptic(30);
+        triggerHaptic(25);
         break;
+      case 'KeyC':
       case 'ShiftLeft':
       case 'ShiftRight':
-      case 'KeyC':
         tetris.hold();
-        triggerHaptic(20);
+        triggerHaptic(15);
         break;
       case 'KeyU':
         tetris.undo();
@@ -219,83 +216,21 @@ document.addEventListener('DOMContentLoaded', () => {
     keyState[e.code] = false;
   });
 
-  // Continuous soft drop on holding down ArrowDown or S
   setInterval(() => {
     if (keyState['ArrowDown'] || keyState['KeyS']) {
       tetris.softDrop();
     }
   }, 90);
 
-  // --- Touch & Gesture Controls (Mobile & iPad) ---
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchStartTime = 0;
-  let isSwiping = false;
-
-  gameCanvas.addEventListener('touchstart', (e) => {
-    window.soundEngine.ensureContext();
-    if (!window.soundEngine.bgmPlaying && !window.soundEngine.isMuted) {
-      window.soundEngine.startBGM();
-    }
-
-    if (e.touches.length === 1) {
-      const touch = e.touches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      touchStartTime = performance.now();
-      isSwiping = true;
-    }
-  }, { passive: false });
-
-  gameCanvas.addEventListener('touchmove', (e) => {
-    if (!isSwiping || e.touches.length !== 1) return;
-    e.preventDefault();
-
-    const touch = e.touches[0];
-    const dx = touch.clientX - touchStartX;
-    const dy = touch.clientY - touchStartY;
-    const threshold = tetris.blockSize * 0.8;
-
-    if (Math.abs(dx) > threshold) {
-      if (dx > 0) {
-        tetris.moveRight();
-      } else {
-        tetris.moveLeft();
-      }
-      touchStartX = touch.clientX;
-      triggerHaptic(10);
-    } else if (dy > threshold * 1.2) {
-      tetris.softDrop();
-      touchStartY = touch.clientY;
-    }
-  }, { passive: false });
-
-  gameCanvas.addEventListener('touchend', (e) => {
-    if (!isSwiping) return;
-    isSwiping = false;
-    const touchEndTime = performance.now();
-    const duration = touchEndTime - touchStartTime;
-
-    // Detect tap for rotation
-    const touch = e.changedTouches[0];
-    const dx = touch.clientX - touchStartX;
-    const dy = touch.clientY - touchStartY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    if (duration < 250 && dist < 15) {
-      tetris.rotateClockwise();
-      triggerHaptic(15);
-    }
-  });
-
-  // --- On-Screen Virtual Buttons Binding with Repeat Support ---
-  const bindContinuousBtn = (btn, action, intervalMs = 120) => {
+  // --- Giant Kid Touch Controls Binding ---
+  const bindKidButton = (btn, action, continuous = false, intervalMs = 120) => {
     if (!btn) return;
     let timer = null;
-    let repeatTimer = null;
+    let repeat = null;
 
-    const start = (e) => {
+    const onStart = (e) => {
       e.preventDefault();
+      if (!gameStarted) return;
       window.soundEngine.ensureContext();
       if (!window.soundEngine.bgmPlaying && !window.soundEngine.isMuted) {
         window.soundEngine.startBGM();
@@ -304,85 +239,76 @@ document.addEventListener('DOMContentLoaded', () => {
       action();
       triggerHaptic(12);
 
-      timer = setTimeout(() => {
-        repeatTimer = setInterval(() => {
-          action();
-          triggerHaptic(8);
-        }, intervalMs);
-      }, 250);
+      if (continuous) {
+        timer = setTimeout(() => {
+          repeat = setInterval(() => {
+            action();
+            triggerHaptic(8);
+          }, intervalMs);
+        }, 220);
+      }
     };
 
-    const stop = () => {
+    const onEnd = (e) => {
+      if (e) e.preventDefault();
       btn.classList.remove('btn-active');
       if (timer) clearTimeout(timer);
-      if (repeatTimer) clearInterval(repeatTimer);
+      if (repeat) clearInterval(repeat);
     };
 
-    btn.addEventListener('pointerdown', start);
-    btn.addEventListener('pointerup', stop);
-    btn.addEventListener('pointerleave', stop);
-    btn.addEventListener('pointercancel', stop);
+    btn.addEventListener('pointerdown', onStart);
+    btn.addEventListener('pointerup', onEnd);
+    btn.addEventListener('pointerleave', onEnd);
+    btn.addEventListener('pointercancel', onEnd);
+    btn.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
   };
 
-  const bindSingleTapBtn = (btn, action) => {
-    if (!btn) return;
-    btn.addEventListener('pointerdown', (e) => {
+  // ◀ Move Left & ▶ Move Right
+  bindKidButton(btnLeft, () => tetris.moveLeft(), true, 110);
+  bindKidButton(btnRight, () => tetris.moveRight(), true, 110);
+
+  // 🔄 SPIN (Only 1 fun spin button!)
+  bindKidButton(btnRotate, () => tetris.rotateClockwise(), false);
+
+  // ⬇️ DOWN (Soft Drop: lands solidly if touching block)
+  bindKidButton(btnDown, () => tetris.softDrop(), true, 85);
+
+  // ⚡ DROP (Slam Drop)
+  bindKidButton(btnDrop, () => tetris.hardDrop(), false);
+
+  // Pocket Hold
+  if (btnHoldCard) {
+    btnHoldCard.addEventListener('pointerdown', (e) => {
       e.preventDefault();
-      window.soundEngine.ensureContext();
-      if (!window.soundEngine.bgmPlaying && !window.soundEngine.isMuted) {
-        window.soundEngine.startBGM();
-      }
-      btn.classList.add('btn-active');
-      action();
-      triggerHaptic(20);
+      tetris.hold();
+      triggerHaptic(15);
     });
-    const release = () => btn.classList.remove('btn-active');
-    btn.addEventListener('pointerup', release);
-    btn.addEventListener('pointerleave', release);
-    btn.addEventListener('pointercancel', release);
-  };
+  }
 
-  bindContinuousBtn(btnLeft, () => tetris.moveLeft());
-  bindContinuousBtn(btnRight, () => tetris.moveRight());
-  bindContinuousBtn(btnDown, () => tetris.softDrop(), 80);
+  // --- Kid Power Tools: Undo & Magic Wand ---
+  undoBtn.addEventListener('click', () => {
+    if (tetris.undo()) {
+      triggerHaptic(20);
+    }
+  });
 
-  bindSingleTapBtn(btnRotate, () => tetris.rotateClockwise());
-  bindSingleTapBtn(btnRotateCCW, () => tetris.rotateCounterClockwise());
-  bindSingleTapBtn(btnDrop, () => tetris.hardDrop());
-  bindSingleTapBtn(btnHold, () => tetris.hold());
-
-  // --- UI Action Buttons ---
-
-  // Magic Wand Power-Up
   function useMagicWand() {
     if (tetris.useMagicWand()) {
       triggerHaptic(30);
       const rect = gameCanvas.getBoundingClientRect();
-      fx.spawnMagicSparkles(rect.left + rect.width / 2, rect.bottom - 40, 40);
-      magicWandBtn.classList.add('cooldown');
+      fx.spawnMagicSparkles(rect.left + rect.width / 2, rect.bottom - 40, 35);
       magicWandBtn.disabled = true;
 
-      const updateCooldown = setInterval(() => {
+      const wandInterval = setInterval(() => {
         if (tetris.magicWandAvailable) {
-          magicWandBtn.classList.remove('cooldown');
           magicWandBtn.disabled = false;
-          magicWandBtn.querySelector('.btn-badge').textContent = 'READY!';
-          clearInterval(updateCooldown);
-        } else {
-          magicWandBtn.querySelector('.btn-badge').textContent = `${tetris.magicWandCooldown}s`;
+          clearInterval(wandInterval);
         }
       }, 500);
     }
   }
 
   magicWandBtn.addEventListener('click', useMagicWand);
-
-  // Undo Button
-  undoBtn.addEventListener('click', () => {
-    if (tetris.undo()) {
-      triggerHaptic(20);
-    }
-  });
 
   // Theme Switcher
   const themes = ['candy', 'animals', 'galaxy'];
@@ -391,29 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
     currentThemeIdx = (currentThemeIdx + 1) % themes.length;
     const themeKey = themes[currentThemeIdx];
     tetris.currentTheme = themeKey;
-
     document.body.className = `theme-${themeKey}`;
-    const info = THEMES[themeKey];
-    themeBtn.querySelector('.btn-label').textContent = info.name;
     window.soundEngine.playClick();
-    mascot.say(`New Theme: ${info.name}! ✨`);
-  });
-
-  // Game Mode Switcher (Kids Mode, Zen Mode, Classic)
-  const modes = [
-    { key: 'kids', label: 'Kids 🌟', desc: 'Gentle & Forgiving' },
-    { key: 'zen', label: 'Zen 🎈', desc: 'No Game Over!' },
-    { key: 'classic', label: 'Classic 🏆', desc: 'Traditional Pace' }
-  ];
-  let currentModeIdx = 0;
-  modeBtn.addEventListener('click', () => {
-    currentModeIdx = (currentModeIdx + 1) % modes.length;
-    const mode = modes[currentModeIdx];
-    tetris.mode = mode.key;
-    tetris.updateSpeed();
-    modeBtn.querySelector('.btn-label').textContent = mode.label;
-    window.soundEngine.playClick();
-    mascot.say(`Mode: ${mode.label}! 🎉`);
+    mascot.say(`New Theme! ✨`);
   });
 
   // Sound Toggle
@@ -425,10 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Pause Controls
   function togglePause() {
+    if (!gameStarted) return;
     tetris.isPaused = !tetris.isPaused;
     if (tetris.isPaused) {
       pauseOverlay.classList.remove('hidden');
-      mascot.say("Taking a rest? 💤");
+      mascot.say("Resting! 💤");
     } else {
       pauseOverlay.classList.add('hidden');
       mascot.say("Let's Go! 🚀");
@@ -450,22 +357,24 @@ document.addEventListener('DOMContentLoaded', () => {
   restartBtn.addEventListener('click', restartGame);
   restartModalBtn.addEventListener('click', restartGame);
 
-  // Window Resize handling
+  // Dynamic window resizing
   window.addEventListener('resize', () => {
     tetris.resizeCanvases();
   });
 
-  // --- Main Animation & Render Loop ---
-  let lastFrameTime = performance.now();
-  function gameLoop(now) {
-    const delta = now - lastFrameTime;
-    lastFrameTime = now;
+  // Game loop
+  let lastTime = performance.now();
+  function loop(now) {
+    const delta = now - lastTime;
+    lastTime = now;
 
-    tetris.update(delta);
+    if (gameStarted) {
+      tetris.update(delta);
+    }
     tetris.draw();
 
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(loop);
   }
 
-  requestAnimationFrame(gameLoop);
+  requestAnimationFrame(loop);
 });

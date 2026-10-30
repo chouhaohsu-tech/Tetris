@@ -9,97 +9,79 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Jelly Blocks! 🐻✨ Cute Kids Tetris Adventure</title>
-  <meta name="description" content="A super cute, fun, and kid-friendly Web Tetris game with bouncy animations, cheerful sounds, and gentle gameplay for kids under 8!">
+  <title>Jelly Blocks! 🐻✨ Cute Kids Tetris</title>
 
   <!-- Google Fonts: Fredoka & Nunito -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=1.0.0">
+  <link rel="stylesheet" href="style.css?v=2.0.0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐻</text></svg>">
 </head>
 <body class="theme-candy">
-  <!-- Particle FX Canvas overlay for fireworks, star bursts, and confetti -->
+  <!-- Particle FX Canvas overlay -->
   <canvas id="fxCanvas"></canvas>
 
   <div class="app-layout">
-    <!-- Top Header -->
+    <!-- Top Header: Simple & Large for Kids -->
     <header class="app-header">
-      <div class="logo-group">
+      <div class="header-left">
         <span class="logo-emoji">🐻</span>
         <h1 class="logo-title">Jelly Tetris!</h1>
-        <span class="logo-star">✨</span>
       </div>
 
-      <div class="header-actions">
-        <!-- Theme Switcher -->
-        <button id="themeBtn" class="pill-btn" title="Change Theme" aria-label="Change Theme">
-          <span class="btn-icon">🎨</span>
-          <span class="btn-label">Candy Land 🍬</span>
-        </button>
+      <!-- Score & Stars Badges -->
+      <div class="header-score-group">
+        <div class="badge-pill score-pill" title="Score">
+          <span class="badge-icon">🏆</span>
+          <span id="scoreVal" class="badge-val">0</span>
+        </div>
+        <div class="badge-pill stars-pill" title="Stars Collected">
+          <span class="badge-icon">⭐</span>
+          <span id="starsVal" class="badge-val">0</span>
+        </div>
+      </div>
 
-        <!-- Mode Switcher -->
-        <button id="modeBtn" class="pill-btn" title="Change Mode" aria-label="Change Mode">
-          <span class="btn-icon">🎮</span>
-          <span class="btn-label">Kids 🌟</span>
-        </button>
-
-        <!-- Sound Toggle -->
-        <button id="soundBtn" class="circle-btn" title="Toggle Sound" aria-label="Toggle Sound">
+      <!-- Quick Action Buttons -->
+      <div class="header-tools">
+        <button id="themeBtn" class="tool-circle-btn" title="Change Theme" aria-label="Theme">🎨</button>
+        <button id="soundBtn" class="tool-circle-btn" title="Sound Mute/Unmute" aria-label="Sound">
           <span id="soundIcon">🔊</span>
         </button>
-
-        <!-- Pause / Menu -->
-        <button id="pauseBtn" class="circle-btn" title="Pause Game" aria-label="Pause Game">
-          <span>⏸️</span>
-        </button>
-
-        <!-- Restart -->
-        <button id="restartBtn" class="circle-btn" title="Restart Game" aria-label="Restart Game">
-          <span>🔄</span>
-        </button>
+        <button id="pauseBtn" class="tool-circle-btn" title="Pause Game" aria-label="Pause">⏸️</button>
+        <button id="restartBtn" class="tool-circle-btn" title="Restart Game" aria-label="Restart">🔄</button>
       </div>
     </header>
 
-    <!-- Main Game Arena -->
+    <!-- Main Game Area -->
     <main class="game-arena">
-      <!-- Left Sidebar (Hold, Mascot, Magic Helpers) -->
-      <aside class="sidebar sidebar-left">
-        <!-- Hold Box -->
-        <div class="card-box hold-box">
-          <div class="box-title">🎒 POCKET</div>
-          <div class="canvas-holder">
-            <canvas id="holdCanvas" width="80" height="80"></canvas>
-          </div>
-          <div class="box-hint">Tap 🎒 Hold</div>
+      <!-- Left Side Widget: Hold Pocket & Magic Helpers -->
+      <aside class="side-widget side-left">
+        <div class="mini-card" id="btnHoldCard" title="Tap to save piece!">
+          <div class="mini-card-title">🎒 POCKET</div>
+          <canvas id="holdCanvas" width="56" height="56"></canvas>
         </div>
 
-        <!-- Animated Mascot Companion -->
-        <div class="mascot-card" id="mascotContainer"></div>
-
-        <!-- Kid Magic Power Helpers -->
-        <div class="kid-powers">
-          <button id="undoBtn" class="power-btn undo-btn" title="Oops! Undo last drop">
-            <span class="power-icon">↩️</span>
-            <span class="power-text">Oops!</span>
+        <div class="power-col">
+          <button id="undoBtn" class="big-power-btn" title="Oops! Undo last block">
+            <span class="big-power-icon">↩️</span>
+            <span class="big-power-label">Oops!</span>
           </button>
-          <button id="magicWandBtn" class="power-btn wand-btn" title="Magic Star Wand: Clears bottom line!">
-            <span class="power-icon">🪄</span>
-            <span class="power-text">Magic</span>
-            <span class="btn-badge">READY!</span>
+          <button id="magicWandBtn" class="big-power-btn" title="Magic Star Wand: Clears bottom row!">
+            <span class="big-power-icon">🪄</span>
+            <span class="big-power-label">Magic</span>
           </button>
         </div>
       </aside>
 
-      <!-- Center Playfield -->
+      <!-- Center: Big Clear Tetris Board -->
       <section class="board-container">
         <div class="board-frame">
-          <canvas id="gameCanvas" width="300" height="600"></canvas>
+          <canvas id="gameCanvas" width="240" height="480"></canvas>
         </div>
 
-        <!-- Pop-in Celebration Banner -->
+        <!-- Pop-in Celebration Banner (Starts strictly HIDDEN) -->
         <div id="celebrationBanner" class="celebration-banner hidden">
           <div class="banner-inner">
             <span id="praiseText">AWESOME! 🌟</span>
@@ -107,137 +89,102 @@
         </div>
       </section>
 
-      <!-- Right Sidebar (Next, Stats) -->
-      <aside class="sidebar sidebar-right">
-        <!-- Next Queue Box -->
-        <div class="card-box next-box">
-          <div class="box-title">🔮 NEXT</div>
-          <div class="canvas-holder">
-            <canvas id="nextCanvas" width="80" height="220"></canvas>
-          </div>
+      <!-- Right Side Widget: Next Piece & Mascot Bubu -->
+      <aside class="side-widget side-right">
+        <div class="mini-card">
+          <div class="mini-card-title">🔮 NEXT</div>
+          <canvas id="nextCanvas" width="56" height="56"></canvas>
         </div>
 
-        <!-- Score & Stats -->
-        <div class="stats-card">
-          <div class="stat-row score-stat">
-            <span class="stat-icon">🏆</span>
-            <div class="stat-info">
-              <span class="stat-label">SCORE</span>
-              <span id="scoreVal" class="stat-num">0</span>
-            </div>
-          </div>
-
-          <div class="stat-row stars-stat">
-            <span class="stat-icon">⭐</span>
-            <div class="stat-info">
-              <span class="stat-label">STARS</span>
-              <span id="starsVal" class="stat-num">0</span>
-            </div>
-          </div>
-
-          <div class="stat-grid-duo">
-            <div class="stat-mini">
-              <span class="stat-mini-label">LINES</span>
-              <span id="linesVal" class="stat-mini-num">0</span>
-            </div>
-            <div class="stat-mini">
-              <span class="stat-mini-label">LEVEL</span>
-              <span id="levelVal" class="stat-mini-num">1</span>
-            </div>
-          </div>
-        </div>
+        <!-- Cheering Mascot -->
+        <div class="mascot-display" id="mascotContainer"></div>
       </aside>
     </main>
 
-    <!-- Bottom Responsive Touch Gamepad (Engineered for iPad & iPhone) -->
-    <footer class="gamepad-footer">
-      <!-- Movement Pad (Left) -->
-      <div class="dpad-group">
-        <button id="btnLeft" class="touch-btn move-btn" aria-label="Move Left">
-          <span class="touch-icon">◀</span>
+    <!-- Big Chunky Kid-Friendly Controller (4 Simple Buttons!) -->
+    <footer class="kid-controller">
+      <!-- Left Hand: Move Left & Move Right -->
+      <div class="ctrl-left-group">
+        <button id="btnLeft" class="kid-btn btn-move-left" aria-label="Move Left">
+          <span class="kid-btn-icon">◀</span>
+          <span class="kid-btn-text">LEFT</span>
         </button>
-        <button id="btnDown" class="touch-btn down-btn" aria-label="Soft Drop">
-          <span class="touch-icon">▼</span>
-        </button>
-        <button id="btnRight" class="touch-btn move-btn" aria-label="Move Right">
-          <span class="touch-icon">▶</span>
-        </button>
-      </div>
-
-      <!-- Action Pad (Center: Hold & Drop) -->
-      <div class="action-center-group">
-        <button id="btnHold" class="touch-btn hold-action-btn" aria-label="Hold Piece">
-          <span class="touch-icon">🎒</span>
-          <span class="btn-micro-label">HOLD</span>
-        </button>
-        <button id="btnDrop" class="touch-btn hard-drop-btn" aria-label="Hard Slam Drop">
-          <span class="touch-icon">⚡</span>
-          <span class="btn-micro-label">DROP</span>
+        <button id="btnRight" class="kid-btn btn-move-right" aria-label="Move Right">
+          <span class="kid-btn-icon">▶</span>
+          <span class="kid-btn-text">RIGHT</span>
         </button>
       </div>
 
-      <!-- Rotation Pad (Right) -->
-      <div class="rotate-group">
-        <button id="btnRotateCCW" class="touch-btn rot-btn" aria-label="Rotate Counter-Clockwise">
-          <span class="touch-icon">↩</span>
-          <span class="btn-micro-label">LEFT</span>
+      <!-- Center: Quick Slam Drop -->
+      <div class="ctrl-center-group">
+        <button id="btnDrop" class="kid-btn btn-slam-drop" aria-label="Slam Drop">
+          <span class="kid-btn-icon">⚡</span>
+          <span class="kid-btn-text">DROP</span>
         </button>
-        <button id="btnRotate" class="touch-btn rot-main-btn" aria-label="Rotate Clockwise">
-          <span class="touch-icon">🔄</span>
-          <span class="btn-micro-label">SPIN</span>
+      </div>
+
+      <!-- Right Hand: SPIN (Rotate) & DOWN (Soft Drop) -->
+      <div class="ctrl-right-group">
+        <button id="btnRotate" class="kid-btn btn-spin" aria-label="Spin / Rotate Block">
+          <span class="kid-btn-icon">🔄</span>
+          <span class="kid-btn-text">SPIN</span>
+        </button>
+        <button id="btnDown" class="kid-btn btn-drop-down" aria-label="Down / Soft Drop">
+          <span class="kid-btn-icon">▼</span>
+          <span class="kid-btn-text">DOWN</span>
         </button>
       </div>
     </footer>
   </div>
 
+  <!-- Start Game Overlay for Kids -->
+  <div id="startOverlay" class="modal-overlay">
+    <div class="modal-card start-modal-card">
+      <div class="modal-icon">🐻✨</div>
+      <h2 class="modal-title">Jelly Tetris!</h2>
+      <p class="modal-subtitle">Choose how you want to play:</p>
+
+      <div class="mode-selector">
+        <button class="mode-chip active" data-mode="kids">Kids 🌟</button>
+        <button class="mode-chip" data-mode="zen">Zen 🎈</button>
+        <button class="mode-chip" data-mode="classic">Classic 🏆</button>
+      </div>
+
+      <button id="playStartBtn" class="big-play-btn">
+        <span>▶️ TAP TO PLAY! 🎈</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Pause Overlay -->
   <div id="pauseOverlay" class="modal-overlay hidden">
-    <div class="modal-card pause-card">
+    <div class="modal-card">
       <div class="modal-icon">💤</div>
       <h2 class="modal-title">Game Paused!</h2>
       <p class="modal-subtitle">Take a gentle break or stretch your paws! 🐾</p>
-      <div class="modal-btn-row">
-        <button id="resumeBtn" class="big-action-btn resume-btn">
-          <span>▶️ Continue Playing!</span>
-        </button>
-      </div>
-      <div class="keyboard-hints">
-        <p><strong>Keyboard Shortcuts (PC):</strong></p>
-        <p>⬅️ ➡️ : Move | ⬆️ : Spin | ⬇️ : Down</p>
-        <p>Space : Slam Drop | C/Shift : Pocket Hold | U : Oops! | M : Magic</p>
-      </div>
+      <button id="resumeBtn" class="big-play-btn">
+        <span>▶️ Continue Playing!</span>
+      </button>
     </div>
   </div>
 
   <!-- Game Over Modal -->
   <div id="gameOverModal" class="modal-overlay hidden">
-    <div class="modal-card game-over-card">
+    <div class="modal-card">
       <div class="modal-icon">🎉</div>
       <h2 class="modal-title">Super Effort!</h2>
-      <p class="modal-subtitle">You played wonderfully! Look at your treasures:</p>
-      <div class="game-over-stats">
-        <div class="go-stat-item">
-          <span class="go-stat-icon">🏆</span>
-          <span class="go-stat-val" id="finalScore">0</span>
-          <span class="go-stat-label">Total Score</span>
-        </div>
-        <div class="go-stat-item">
-          <span class="go-stat-icon">⭐</span>
-          <span class="go-stat-val" id="finalStars">0</span>
-          <span class="go-stat-label">Stars Earned</span>
-        </div>
-      </div>
-      <button id="restartModalBtn" class="big-action-btn play-again-btn">
+      <p class="modal-subtitle">You did awesome! ⭐ Stars: <strong id="finalStars">0</strong> | Score: <strong id="finalScore">0</strong></p>
+      <button id="restartModalBtn" class="big-play-btn">
         <span>🌟 Play Again! 🎈</span>
       </button>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="audio.js?v=1.0.0"></script>
-  <script src="particles.js?v=1.0.0"></script>
-  <script src="mascot.js?v=1.0.0"></script>
-  <script src="tetris.js?v=1.0.0"></script>
-  <script src="game.js?v=1.0.0"></script>
+  <script src="audio.js?v=2.0.0"></script>
+  <script src="particles.js?v=2.0.0"></script>
+  <script src="mascot.js?v=2.0.0"></script>
+  <script src="tetris.js?v=2.0.0"></script>
+  <script src="game.js?v=2.0.0"></script>
 </body>
 </html>

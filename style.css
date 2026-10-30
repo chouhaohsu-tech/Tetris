@@ -1,55 +1,53 @@
 /* Jelly Blocks: Kids Tetris Adventure Stylesheet */
-/* Optimized for iPhone, iPad, and PC with Cute Pastel Aesthetics */
+/* Designed specifically for kids aged 5-8, iPhone, iPad, and PC */
 
 :root {
   --font-main: 'Fredoka', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
-  --bg-gradient: linear-gradient(135deg, #FFF0F5 0%, #E8F0FE 50%, #FFF5EB 100%);
-  --panel-bg: rgba(255, 255, 255, 0.92);
+  --bg-gradient: linear-gradient(135deg, #FFE5EC 0%, #FFF0F5 45%, #E0F2FE 100%);
+  --panel-bg: rgba(255, 255, 255, 0.95);
   --panel-border: #FFB6C1;
   --text-color: #2B2D42;
   --text-muted: #8D99AE;
-  --accent-pink: #FF6B8B;
+  --accent-pink: #FF5E7E;
   --accent-yellow: #FFD166;
   --accent-blue: #4D96FF;
-  --accent-green: #6BCB77;
+  --accent-green: #2ED573;
   --accent-purple: #9B5DE5;
-  --shadow-color: rgba(43, 45, 66, 0.12);
-  --btn-shadow: 0 5px 0 rgba(0, 0, 0, 0.15);
-  --btn-active-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+  --shadow-color: rgba(43, 45, 66, 0.14);
 }
 
-/* Theme 1: Candy Land 🍬 */
+/* Themes */
 body.theme-candy {
-  --bg-gradient: linear-gradient(135deg, #FFE5EC 0%, #FFF0F5 40%, #E0F2FE 100%);
-  --panel-bg: rgba(255, 255, 255, 0.94);
+  --bg-gradient: linear-gradient(135deg, #FFE5EC 0%, #FFF0F5 45%, #E0F2FE 100%);
   --panel-border: #FFB6C1;
   --accent-primary: #FF5E7E;
 }
 
-/* Theme 2: Animal Friends 🐱 */
 body.theme-animals {
   --bg-gradient: linear-gradient(135deg, #E8F5E9 0%, #E3F2FD 50%, #FFF9C4 100%);
-  --panel-bg: rgba(255, 255, 255, 0.94);
   --panel-border: #81C784;
   --accent-primary: #4CAF50;
 }
 
-/* Theme 3: Galaxy Stars 🚀 */
 body.theme-galaxy {
   --bg-gradient: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
-  --panel-bg: rgba(26, 26, 46, 0.92);
+  --panel-bg: rgba(26, 26, 46, 0.95);
   --panel-border: #9B5DE5;
   --text-color: #F8F9FA;
   --text-muted: #ADB5BD;
-  --shadow-color: rgba(0, 0, 0, 0.4);
   --accent-primary: #BE2EDD;
 }
 
+/* Global resets & fixes */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
+}
+
+.hidden {
+  display: none !important;
 }
 
 html, body {
@@ -73,7 +71,7 @@ html, body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 100;
+  z-index: 99;
 }
 
 /* App Main Container */
@@ -83,12 +81,14 @@ html, body {
   width: 100%;
   height: 100%;
   height: 100dvh;
+  max-width: 900px;
+  margin: 0 auto;
   padding: env(safe-area-inset-top, 6px) env(safe-area-inset-right, 8px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 8px);
   position: relative;
   z-index: 10;
 }
 
-/* Header */
+/* Top Header Bar */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -102,10 +102,10 @@ html, body {
   flex-shrink: 0;
 }
 
-.logo-group {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .logo-emoji {
@@ -114,95 +114,99 @@ html, body {
 }
 
 .logo-title {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   background: linear-gradient(45deg, #FF5E7E, #FFA502);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: 0.5px;
 }
 
-.logo-star {
-  font-size: 18px;
-  animation: spinSlow 6s infinite linear;
-}
-
-.header-actions {
+/* Score & Stars in Header (Visible everywhere) */
+.header-score-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-/* Button styles */
-.pill-btn {
+.badge-pill {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   background: #FFF;
   border: 2px solid var(--panel-border);
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 4px 10px;
-  font-family: var(--font-main);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-color);
-  cursor: pointer;
-  box-shadow: var(--btn-shadow);
-  transition: transform 0.1s, box-shadow 0.1s;
+  box-shadow: 0 2px 6px var(--shadow-color);
 }
 
-.pill-btn:active {
-  transform: translateY(3px);
-  box-shadow: var(--btn-active-shadow);
+.badge-icon {
+  font-size: 16px;
 }
 
-.circle-btn {
-  width: 36px;
-  height: 36px;
+.badge-val {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--accent-pink);
+}
+
+.stars-pill .badge-val {
+  color: #FF9F1C;
+}
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-circle-btn {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #FFF;
   border: 2px solid var(--panel-border);
-  font-size: 16px;
+  font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: var(--btn-shadow);
-  transition: transform 0.1s, box-shadow 0.1s;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+  transition: transform 0.08s, box-shadow 0.08s;
+  touch-action: manipulation;
 }
 
-.circle-btn:active {
+.tool-circle-btn:active {
   transform: translateY(3px);
-  box-shadow: var(--btn-active-shadow);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.12);
 }
 
-/* Arena: Sidebars + Board */
+/* Main Arena: Clean 3-column / flexible layout */
 .game-arena {
   display: flex;
   flex: 1;
   min-height: 0;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   position: relative;
+  overflow: hidden;
 }
 
-/* Sidebars */
-.sidebar {
+/* Side Cards: Hold & Next */
+.side-widget {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 140px;
   align-items: center;
-  justify-content: flex-start;
-  height: 100%;
+  gap: 8px;
+  width: 90px;
+  flex-shrink: 0;
 }
 
-.card-box {
+.mini-card {
   background: var(--panel-bg);
   border: 3px solid var(--panel-border);
-  border-radius: 18px;
-  padding: 8px;
+  border-radius: 16px;
+  padding: 6px;
   box-shadow: 0 4px 10px var(--shadow-color);
   display: flex;
   flex-direction: column;
@@ -210,274 +214,140 @@ html, body {
   width: 100%;
 }
 
-.box-title {
-  font-size: 12px;
+.mini-card-title {
+  font-size: 11px;
   font-weight: 800;
   color: var(--accent-pink);
-  margin-bottom: 4px;
-  letter-spacing: 1px;
+  margin-bottom: 2px;
+  letter-spacing: 0.5px;
 }
 
-.box-hint {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-.canvas-holder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.mini-card canvas {
+  display: block;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.03);
-  border-radius: 12px;
-  padding: 4px;
 }
 
-/* Mascot Card */
-.mascot-card {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.mascot-wrapper {
-  position: relative;
+/* Mascot Display */
+.mascot-display {
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.15s;
-}
-
-.mascot-wrapper:hover {
-  transform: scale(1.05);
-}
-
-.mascot-svg {
-  width: 110px;
-  height: 120px;
-  filter: drop-shadow(0 4px 6px var(--shadow-color));
 }
 
 .mascot-bubble {
-  position: relative;
   background: #FFF;
-  border: 2.5px solid var(--accent-pink);
-  border-radius: 14px;
-  padding: 4px 10px;
-  font-size: 12px;
+  border: 2px solid var(--accent-pink);
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 11px;
   font-weight: 800;
   color: var(--text-color);
-  box-shadow: 0 3px 8px var(--shadow-color);
+  box-shadow: 0 3px 6px var(--shadow-color);
   margin-bottom: -4px;
   white-space: nowrap;
   z-index: 5;
-  transition: opacity 0.3s, transform 0.3s;
+  transition: opacity 0.25s, transform 0.25s;
 }
 
-.mascot-bubble.hidden {
-  opacity: 0;
-  transform: scale(0.7);
-  pointer-events: none;
+.mascot-svg {
+  width: 78px;
+  height: 84px;
+  filter: drop-shadow(0 3px 5px var(--shadow-color));
 }
 
-.mascot-bubble.pop-in {
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-/* Mascot Mood Animations */
-.mood-cheer .mascot-svg {
-  animation: mascotJump 0.6s infinite ease-in-out;
-}
-
-.mood-dance .mascot-svg {
-  animation: mascotWiggle 0.4s infinite ease-in-out;
-}
-
-.mood-worried .mascot-svg {
-  animation: mascotShiver 0.2s infinite ease-in-out;
-}
-
-.giggle-anim {
-  animation: mascotGiggle 0.5s ease-in-out;
-}
-
-/* Kid Powers (Undo & Magic Wand) */
-.kid-powers {
+/* Kid Power Buttons (Oops! & Magic Wand) */
+.power-col {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
 }
 
-.power-btn {
-  flex: 1;
+.big-power-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px 4px;
-  border-radius: 14px;
-  border: 2px solid #FFD166;
   background: #FFFDF0;
+  border: 2.5px solid #FFD166;
+  border-radius: 14px;
+  padding: 6px 2px;
   cursor: pointer;
-  box-shadow: var(--btn-shadow);
-  position: relative;
-  transition: transform 0.1s, box-shadow 0.1s;
+  box-shadow: 0 4px 0 #E2B742;
+  transition: transform 0.08s, box-shadow 0.08s;
+  touch-action: manipulation;
 }
 
-.power-btn:active:not(:disabled) {
+.big-power-btn:active:not(:disabled) {
   transform: translateY(3px);
-  box-shadow: var(--btn-active-shadow);
+  box-shadow: 0 1px 0 #E2B742;
 }
 
-.power-btn:disabled {
-  opacity: 0.6;
+.big-power-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.power-icon {
+.big-power-icon {
   font-size: 18px;
 }
 
-.power-text {
+.big-power-label {
   font-size: 10px;
   font-weight: 800;
   color: var(--text-color);
 }
 
-.btn-badge {
-  font-size: 8px;
-  font-weight: 900;
-  background: #FF5E7E;
-  color: #FFF;
-  padding: 1px 4px;
-  border-radius: 8px;
-  margin-top: 2px;
-}
-
-/* Stats Card */
-.stats-card {
-  background: var(--panel-bg);
-  border: 3px solid var(--panel-border);
-  border-radius: 18px;
-  padding: 10px;
-  box-shadow: 0 4px 10px var(--shadow-color);
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.stat-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-  padding: 4px 8px;
-  border: 1.5px solid var(--panel-border);
-}
-
-.stat-icon {
-  font-size: 20px;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-label {
-  font-size: 9px;
-  font-weight: 800;
-  color: var(--text-muted);
-}
-
-.stat-num {
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--accent-pink);
-}
-
-.stat-grid-duo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.stat-mini {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 10px;
-  padding: 4px;
-  border: 1.5px solid var(--panel-border);
-}
-
-.stat-mini-label {
-  font-size: 9px;
-  font-weight: 800;
-  color: var(--text-muted);
-}
-
-.stat-mini-num {
-  font-size: 14px;
-  font-weight: 900;
-  color: var(--accent-blue);
-}
-
-.stat-pop {
-  animation: statPulse 0.25s ease-out;
-}
-
-/* Center Board */
+/* Center Board Container */
 .board-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
   height: 100%;
+  min-height: 0;
+  min-width: 0;
   position: relative;
 }
 
 .board-frame {
   background: var(--panel-bg);
   border: 4px solid var(--panel-border);
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 4px;
   box-shadow: 0 8px 24px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 #gameCanvas {
   display: block;
-  border-radius: 14px;
+  border-radius: 12px;
   background: #FFF;
 }
 
-/* Celebration Banner */
+/* Celebration Banner (Fixed: Hidden by default!) */
 .celebration-banner {
   position: absolute;
-  top: 35%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 80;
+  z-index: 120;
   pointer-events: none;
 }
 
 .banner-inner {
-  background: linear-gradient(135deg, #FF6B8B, #FF8E72);
+  background: linear-gradient(135deg, #FF5E7E, #FFA502);
   color: #FFF;
   padding: 12px 24px;
   border-radius: 30px;
-  border: 4px solid #FFEAA7;
-  box-shadow: 0 8px 25px rgba(255, 107, 139, 0.5);
+  border: 4px solid #FFF;
+  box-shadow: 0 8px 25px rgba(255, 94, 126, 0.6);
   font-size: 24px;
   font-weight: 900;
   white-space: nowrap;
@@ -485,97 +355,120 @@ html, body {
 }
 
 .banner-anim {
-  animation: bannerBurst 2.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: bannerBurst 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-/* Bottom Gamepad (Touch Friendly) */
-.gamepad-footer {
+/* ======================================================== */
+/* BIG, CHUNKY, KID-FRIENDLY CONTROLLER (4 Simple Buttons!) */
+/* ======================================================== */
+.kid-controller {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
+  padding: 6px 10px;
   gap: 12px;
   flex-shrink: 0;
   z-index: 20;
 }
 
-.dpad-group, .action-center-group, .rotate-group {
+.ctrl-left-group, .ctrl-right-group {
   display: flex;
+  gap: 10px;
   align-items: center;
-  gap: 8px;
 }
 
-.touch-btn {
+/* Giant, tactile, colorful buttons for small hands */
+.kid-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #FFF;
-  border-radius: 18px;
+  height: 64px;
+  border-radius: 20px;
   cursor: pointer;
-  border: 3px solid var(--panel-border);
-  box-shadow: var(--btn-shadow);
-  touch-action: none;
+  border: 3.5px solid transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
   transition: transform 0.08s, box-shadow 0.08s;
 }
 
-.touch-btn.btn-active, .touch-btn:active {
-  transform: translateY(4px);
-  box-shadow: var(--btn-active-shadow);
+.kid-btn:active, .kid-btn.btn-active {
+  transform: translateY(5px);
 }
 
-.move-btn {
-  width: 58px;
-  height: 52px;
-  background: #E8F0FE;
-  border-color: #70A1FF;
+/* ◀ Move Left (Ocean Blue) */
+.btn-move-left {
+  width: 72px;
+  background: linear-gradient(180deg, #E8F4FD 0%, #D0EAFF 100%);
+  border-color: #4D96FF;
+  box-shadow: 0 6px 0 #2A75E6;
+}
+.btn-move-left:active, .btn-move-left.btn-active {
+  box-shadow: 0 1px 0 #2A75E6;
 }
 
-.down-btn {
-  width: 58px;
-  height: 52px;
-  background: #FFF3CD;
-  border-color: #FFD166;
+/* ▶ Move Right (Ocean Blue) */
+.btn-move-right {
+  width: 72px;
+  background: linear-gradient(180deg, #E8F4FD 0%, #D0EAFF 100%);
+  border-color: #4D96FF;
+  box-shadow: 0 6px 0 #2A75E6;
+}
+.btn-move-right:active, .btn-move-right.btn-active {
+  box-shadow: 0 1px 0 #2A75E6;
 }
 
-.hold-action-btn {
-  width: 56px;
-  height: 52px;
-  background: #F3E5F5;
-  border-color: #D6A2E8;
-}
-
-.hard-drop-btn {
-  width: 68px;
-  height: 52px;
-  background: #FFE5EC;
+/* 🔄 SPIN (Vibrant Candy Pink - The fun turning button!) */
+.btn-spin {
+  width: 82px;
+  background: linear-gradient(180deg, #FFE5EC 0%, #FFB6C1 100%);
   border-color: #FF5E7E;
+  box-shadow: 0 6px 0 #E03E60;
+}
+.btn-spin:active, .btn-spin.btn-active {
+  box-shadow: 0 1px 0 #E03E60;
 }
 
-.rot-btn {
-  width: 56px;
-  height: 52px;
-  background: #E0F2FE;
-  border-color: #48CAE4;
+/* ⬇️ DOWN (Sunny Gold/Green - Gentle drop!) */
+.btn-drop-down {
+  width: 82px;
+  background: linear-gradient(180deg, #E8F8EE 0%, #B7EFC5 100%);
+  border-color: #2ED573;
+  box-shadow: 0 6px 0 #1FA855;
+}
+.btn-drop-down:active, .btn-drop-down.btn-active {
+  box-shadow: 0 1px 0 #1FA855;
 }
 
-.rot-main-btn {
-  width: 68px;
-  height: 52px;
-  background: #E8F5E9;
-  border-color: #6BCB77;
-}
-
-.touch-icon {
-  font-size: 22px;
+.kid-btn-icon {
+  font-size: 26px;
   line-height: 1;
 }
 
-.btn-micro-label {
-  font-size: 9px;
+.kid-btn-text {
+  font-size: 11px;
   font-weight: 900;
-  color: var(--text-color);
+  color: #2B2D42;
   margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* Quick Hard Drop button in center */
+.ctrl-center-group {
+  display: flex;
+  align-items: center;
+}
+
+.btn-slam-drop {
+  width: 58px;
+  height: 60px;
+  background: linear-gradient(180deg, #FFF9DB 0%, #FFE066 100%);
+  border-color: #F59F00;
+  box-shadow: 0 6px 0 #D97706;
+}
+.btn-slam-drop:active, .btn-slam-drop.btn-active {
+  box-shadow: 0 1px 0 #D97706;
 }
 
 /* Modals & Overlays */
@@ -593,103 +486,90 @@ html, body {
   justify-content: center;
   z-index: 200;
   padding: 16px;
-  transition: opacity 0.2s;
-}
-
-.modal-overlay.hidden {
-  display: none;
 }
 
 .modal-card {
   background: #FFF;
-  border-radius: 28px;
+  border-radius: 26px;
   border: 4px solid var(--accent-pink);
-  padding: 24px;
+  padding: 22px;
   max-width: 360px;
   width: 100%;
   text-align: center;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.start-modal-card {
+  border-color: #FFD166;
+  background: #FFFCF5;
 }
 
 .modal-icon {
-  font-size: 48px;
-  margin-bottom: 6px;
+  font-size: 50px;
+  margin-bottom: 4px;
 }
 
 .modal-title {
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 800;
   color: var(--text-color);
   margin-bottom: 6px;
 }
 
 .modal-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 16px;
   line-height: 1.4;
 }
 
-.big-action-btn {
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.mode-chip {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--panel-border);
+  background: #FFF;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-color);
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+}
+
+.mode-chip.active {
+  background: var(--accent-pink);
+  color: #FFF;
+  border-color: var(--accent-pink);
+  box-shadow: 0 3px 0 #D63353;
+}
+
+.big-play-btn {
   width: 100%;
-  padding: 12px 20px;
-  border-radius: 20px;
+  padding: 14px 20px;
+  border-radius: 22px;
   border: none;
   font-family: var(--font-main);
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 900;
   color: #FFF;
   cursor: pointer;
-  background: linear-gradient(135deg, #FF6B8B, #FF8E72);
+  background: linear-gradient(135deg, #FF5E7E 0%, #FFA502 100%);
   box-shadow: 0 6px 0 #E04868;
-  transition: transform 0.1s, box-shadow 0.1s;
+  transition: transform 0.08s, box-shadow 0.08s;
+  touch-action: manipulation;
 }
 
-.big-action-btn:active {
+.big-play-btn:active {
   transform: translateY(4px);
   box-shadow: 0 2px 0 #E04868;
-}
-
-.keyboard-hints {
-  margin-top: 16px;
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.game-over-stats {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
-  gap: 12px;
-}
-
-.go-stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #FFF5F7;
-  border: 2px solid var(--panel-border);
-  border-radius: 16px;
-  padding: 10px 16px;
-  flex: 1;
-}
-
-.go-stat-icon {
-  font-size: 24px;
-}
-
-.go-stat-val {
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--accent-pink);
-}
-
-.go-stat-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-muted);
 }
 
 /* Animations */
@@ -698,210 +578,110 @@ html, body {
   50% { transform: translateY(-4px); }
 }
 
-@keyframes spinSlow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 @keyframes popIn {
   0% { transform: scale(0.6); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes statPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); color: #FF9F1C; }
-  100% { transform: scale(1); }
-}
-
-@keyframes mascotJump {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px) scale(1.05); }
-}
-
-@keyframes mascotWiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-8deg) scale(1.05); }
-  75% { transform: rotate(8deg) scale(1.05); }
-}
-
-@keyframes mascotShiver {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  75% { transform: translateX(3px); }
-}
-
-@keyframes mascotGiggle {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.1) rotate(-6deg); }
-  50% { transform: scale(1.15) rotate(6deg); }
-  75% { transform: scale(1.1) rotate(-4deg); }
-}
-
 @keyframes bannerBurst {
-  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-  20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  35% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
   80% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
 }
 
-/* ========================================================= */
-/* Responsive Adaptation for iPhone, iPad, and PC */
-/* ========================================================= */
-
-/* Small Screens / Mobile Phones (iPhone in Portrait) */
-@media (max-width: 640px) {
+/* ======================================================== */
+/* Responsive Tweaks (iPhone & iPad) */
+/* ======================================================== */
+@media (max-width: 600px) {
   .app-header {
     padding: 4px 8px;
     border-radius: 14px;
     margin-bottom: 4px;
   }
   .logo-title {
-    font-size: 16px;
+    font-size: 15px;
   }
-  .logo-emoji {
-    font-size: 20px;
+  .badge-pill {
+    padding: 3px 7px;
   }
-  .pill-btn {
-    padding: 3px 6px;
-    font-size: 11px;
+  .badge-val {
+    font-size: 14px;
   }
-  .circle-btn {
+  .tool-circle-btn {
     width: 32px;
     height: 32px;
     font-size: 14px;
   }
 
-  .game-arena {
+  .side-widget {
+    width: 68px;
     gap: 6px;
   }
-
-  .sidebar {
-    width: 86px;
-    gap: 6px;
-  }
-
-  .card-box {
+  .mini-card {
     padding: 4px;
     border-radius: 12px;
   }
-  .box-title {
-    font-size: 10px;
-  }
-  .box-hint {
-    display: none;
-  }
-
-  .mascot-svg {
-    width: 76px;
-    height: 82px;
-  }
-  .mascot-bubble {
-    font-size: 10px;
-    padding: 2px 6px;
-  }
-
-  .stats-card {
-    padding: 6px;
-    gap: 4px;
-    border-radius: 12px;
-  }
-  .stat-row {
-    padding: 2px 4px;
-    gap: 4px;
-  }
-  .stat-icon {
-    font-size: 15px;
-  }
-  .stat-label {
-    font-size: 8px;
-  }
-  .stat-num {
-    font-size: 13px;
-  }
-  .stat-mini-num {
-    font-size: 11px;
-  }
-
-  .kid-powers {
-    gap: 4px;
-  }
-  .power-btn {
-    padding: 4px 2px;
-  }
-  .power-icon {
-    font-size: 15px;
-  }
-  .power-text {
+  .mini-card-title {
     font-size: 9px;
   }
+  .mascot-svg {
+    width: 62px;
+    height: 68px;
+  }
 
-  /* Gamepad on small mobile */
-  .gamepad-footer {
+  .kid-controller {
     padding: 4px 6px;
     gap: 6px;
   }
-  .touch-btn {
-    border-radius: 14px;
-  }
-  .move-btn, .down-btn {
-    width: 46px;
-    height: 44px;
-  }
-  .hold-action-btn, .rot-btn {
-    width: 44px;
-    height: 44px;
-  }
-  .hard-drop-btn, .rot-main-btn {
-    width: 52px;
-    height: 44px;
-  }
-  .touch-icon {
-    font-size: 18px;
-  }
-  .btn-micro-label {
-    font-size: 8px;
-  }
-}
-
-/* Tablets (iPad in Portrait or Landscape) */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .sidebar {
-    width: 130px;
-  }
-  .touch-btn {
+  .kid-btn {
     height: 56px;
+    border-radius: 16px;
   }
-  .move-btn, .down-btn {
-    width: 64px;
+  .btn-move-left, .btn-move-right {
+    width: 58px;
   }
-  .hard-drop-btn, .rot-main-btn {
-    width: 76px;
+  .btn-spin, .btn-drop-down {
+    width: 66px;
+  }
+  .btn-slam-drop {
+    width: 48px;
+    height: 54px;
+  }
+  .kid-btn-icon {
+    font-size: 22px;
+  }
+  .kid-btn-text {
+    font-size: 9px;
   }
 }
 
-/* PC / Mac / Desktop screens */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .side-widget {
+    width: 100px;
+  }
+  .kid-btn {
+    height: 70px;
+  }
+  .btn-move-left, .btn-move-right {
+    width: 82px;
+  }
+  .btn-spin, .btn-drop-down {
+    width: 95px;
+  }
+}
+
 @media (min-width: 1025px) {
-  .app-layout {
-    max-width: 900px;
-    margin: 0 auto;
-    padding-top: 16px;
-    padding-bottom: 16px;
+  .side-widget {
+    width: 110px;
   }
-  .sidebar {
-    width: 160px;
+  .kid-btn {
+    height: 70px;
   }
-  .card-box, .stats-card {
-    padding: 12px;
+  .btn-move-left, .btn-move-right {
+    width: 86px;
   }
-  .touch-btn {
-    height: 56px;
-  }
-  .move-btn, .down-btn {
-    width: 68px;
-  }
-  .hard-drop-btn, .rot-main-btn {
-    width: 80px;
+  .btn-spin, .btn-drop-down {
+    width: 100px;
   }
 }
